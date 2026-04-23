@@ -1,0 +1,777 @@
+% !TeX program = xelatex
+%─────────────────────────────────────────────────────────────────────────────
+%  toy_example.tex
+%  Beamer slide deck – Lab meeting report (pre-conference)
+%  Topic: Similarity-Based Rating Imputation — End-to-End Walkthrough
+%  Compiler: XeLaTeX (recommended for Korean) 또는 LuaLaTeX
+%─────────────────────────────────────────────────────────────────────────────
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+%─── 폰트 & 한국어 ───────────────────────────────────────────────────────────
+% XeLaTeX + kotex 조합으로 Korean 지원
+% 시스템에 설치된 폰트를 자동으로 사용
+\usepackage{fontspec}
+\usepackage[hangul]{kotex}
+% ─────────────────────────────────────────────────────────────────────────
+% ▶ 폰트 커스터마이즈: 시스템에 설치된 폰트명으로 아래 주석 해제 후 사용
+%   Windows: \setmainfont{Malgun Gothic}  혹은  \setmainfont{Batang}
+%   macOS  : \setmainfont{Apple SD Gothic Neo}
+%   Linux  : \setmainfont{Noto Serif CJK KR}
+% ─────────────────────────────────────────────────────────────────────────
+% 지정 없을 때 kotex가 시스템 기본 폰트 자동 선택
+\setmonofont{Consolas}   % 모노스페이스는 Consolas 사용 (Windows 기본)
+
+%─── 테마 ────────────────────────────────────────────────────────────────────
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\usefonttheme[onlymath]{serif}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+      \usebeamerfont{author in head/foot}\insertshortauthor
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+      \usebeamerfont{title in head/foot}\insertshorttitle
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.2\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+      \usebeamerfont{date in head/foot}
+      \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+    \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+%─── 패키지 ──────────────────────────────────────────────────────────────────
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows, shapes.geometric}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{graphicx}
+
+%─── 색 정의 ─────────────────────────────────────────────────────────────────
+\definecolor{posblue}{RGB}{30,100,200}
+\definecolor{negred}{RGB}{210,40,40}
+\definecolor{hilight}{RGB}{255,230,100}
+\definecolor{testgreen}{RGB}{0,150,80}
+\definecolor{validpurp}{RGB}{130,0,200}
+\definecolor{mutedgray}{RGB}{120,120,120}
+
+%─── 메타정보 ─────────────────────────────────────────────────────────────────
+\title[Similarity-Based Imputation]{유사도 기반 평점 추천 알고리즘\\
+       \small Toy Example를 통한 전체 흐름 설명}
+\subtitle{랩미팅}
+\author[발표자]{[]}
+\institute{[]}
+\date{\today}
+
+%═════════════════════════════════════════════════════════════════════════════
+\begin{document}
+%═════════════════════════════════════════════════════════════════════════════
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{frame}
+  \titlepage
+\end{frame}
+%─────────────────────────────────────────────────────────────────────────────
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{frame}{목차}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+%─────────────────────────────────────────────────────────────────────────────
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{연구 배경}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{연구 배경 및 목표}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+      \textbf{문제 설정}
+      \begin{itemize}
+        \item 사용자-아이템 평점 행렬 $R \in \mathbb{R}^{M \times N}$
+        \item 대부분의 항목이 결측 (Collaborative Filtering 환경)
+        \item 결측 평점 추정 → 추천 시스템에 활용
+      \end{itemize}
+      \vspace{0.6em}
+      \textbf{제안 방법}
+      \begin{itemize}
+        \item 사용자 간 유사도 $S_{uv}$ 계산 (17종 지표)
+        \item $\alpha$-거듭제곱 변환:\; $S_{uv}^{(\alpha)} = \max(S_{uv}, 0)^{\alpha}$
+        \item KNN 가중 예측 + Validation 기반 최적 $\alpha$ 탐색
+      \end{itemize}
+
+    \column{0.48\textwidth}
+      \textbf{실험 데이터}
+      \begin{itemize}
+        \item MovieLens 1M (\textasciitilde 6,000 users, 3,900 items)
+        \item 10-Fold Cross Validation
+        \item 17가지 유사도 지표 비교
+        \item 평가 지표: RMSE, MAD, Precision@N, Recall@N
+      \end{itemize}
+      \vspace{0.6em}
+      \textbf{Today's Focus}
+      \begin{alertblock}{}
+        작은 Toy Example을 통해 알고리즘의 모든 단계를
+        수식과 함께 수작업으로 확인
+      \end{alertblock}
+  \end{columns}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Toy Example 설정}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{예시 데이터: 4명 사용자, 5개 아이템}
+
+  \begin{columns}[T]
+    \column{0.52\textwidth}
+      \textbf{전체 평점 행렬} $R$ (아이템 $\times$ 사용자)
+      \vspace{0.3em}
+
+      \renewcommand{\arraystretch}{1.3}
+      \begin{tabular}{c|cccc}
+        \toprule
+                  & Alice & Bob & Carol & Dave \\
+        \midrule
+        $i_1$     & 5 & 4 & 2 & 4 \\
+        $i_2$     & 4 & 5 & 1 & 3 \\
+        $i_3$     & 2 & 1 & 5 & 2 \\
+        $i_4$     & 1 & 2 & 4 & 1 \\
+        \rowcolor{hilight}
+        $i_5$     & 5 & \textbf{4} & 3 & 2 \\
+        \bottomrule
+      \end{tabular}
+      \vspace{0.4em}
+      \begin{itemize}
+        \item \colorbox{hilight}{Bob의 $i_5$ 평점 = 4} → \textbf{예측 대상}
+        \item 평점 범위: 1 (매우 싫음) $\sim$ 5 (매우 좋음)
+      \end{itemize}
+
+    \column{0.44\textwidth}
+      \textbf{사용자 성향}
+      \begin{itemize}
+        \item \textbf{Alice, Bob}: 액션류($i_1, i_2$) 선호,\\
+              드라마류($i_3, i_4$) 비선호
+        \item \textbf{Carol}: 정반대 취향
+        \item \textbf{Dave}: 중간·혼합 취향
+      \end{itemize}
+      \vspace{0.8em}
+      \textbf{직관적 예측}
+      \begin{exampleblock}{}
+        Alice와 Bob이 취향이 유사 \\
+        $\Rightarrow$ Alice의 $i_5 = 5$가\\
+        \quad\; 강한 단서
+      \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{frame}[shrink=8]{데이터 분리: Train / Validation / Test}
+
+  \begin{center}
+  \begin{tikzpicture}[
+    box/.style={draw, rounded corners=3pt, minimum width=3cm,
+                minimum height=0.8cm, align=center, font=\small},
+    arrow/.style={->, thick}
+  ]
+    \node[box, fill=blue!12] (full) {전체 관측 평점\\ {\footnotesize (20개)}};
+    \node[box, fill=red!15, right=1.8cm of full] (test)
+      {Test\\ {\footnotesize 1개: $(i_5,\text{Bob})=4$}};
+    \node[box, fill=blue!25, below=0.5cm of full] (train)
+      {Train (Full)\\ {\footnotesize 19개}};
+    \node[box, fill=violet!20, right=1.8cm of train] (val)
+      {Validation\\ {\footnotesize 2개: $(i_1,\text{Alice})$, $(i_4,\text{Dave})$}};
+    \node[box, fill=teal!20, below=0.5cm of train] (inner)
+      {Train\_inner\\ {\footnotesize 17개}};
+
+    \draw[arrow] (full) -- node[above, font=\tiny]{분리} (test);
+    \draw[arrow] (full) -- (train);
+    \draw[arrow] (train) -- node[above, font=\tiny]{분리} (val);
+    \draw[arrow] (train) -- (inner);
+
+    \node[right=0.2cm of test, font=\tiny, text=red!70!black, align=left]
+      {최종 평가만 사용\\절대 학습에 사용 금지};
+    \node[right=0.2cm of val, font=\tiny, text=violet!80!black, align=left]
+      {$\alpha$ 최적화 기준};
+    \node[right=0.2cm of inner, font=\tiny, text=teal!80!black, align=left]
+      {KNN 학습 데이터\\유사도 계산 기준};
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.1em}
+  \begin{block}{두 단계 설계 (Test Leakage 방지)}
+    \textbf{Phase 1.} Train\_inner로 유사도 학습 → Validation으로 최적 $\alpha$ 선택 \\
+    \textbf{Phase 2.} Train (Full)로 재학습 → \textcolor{red}{\textbf{Test는 최종 평가에만 1회 사용}}
+  \end{block}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Step 1: 유사도 계산}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{Step 1-A: PCC 유사도 수식}
+
+  \textbf{Pearson Correlation Coefficient (PCC):}
+  \begin{equation*}
+    \text{PCC}(u,v) =
+    \frac{\displaystyle\sum_{i \in C_{uv}}
+          \bigl(r_{ui} - \bar{r}_u\bigr)\bigl(r_{vi} - \bar{r}_v\bigr)}
+         {\sqrt{\displaystyle\sum_{i \in C_{uv}}(r_{ui}-\bar{r}_u)^2}
+          \cdot
+          \sqrt{\displaystyle\sum_{i \in C_{uv}}(r_{vi}-\bar{r}_v)^2}}
+  \end{equation*}
+
+  \vspace{0.4em}
+  \begin{columns}[T]
+    \column{0.45\textwidth}
+      \begin{itemize}
+        \item $C_{uv}$: 두 사용자의 \textbf{공통 평점 아이템} 집합
+        \item $\bar{r}_u$: 사용자 $u$의 \textbf{전체 평균} (공통에 국한 X)
+        \item PCC $\in [-1, +1]$
+        \item 음수 유사도 → 배제 (클리핑)
+      \end{itemize}
+
+    \column{0.52\textwidth}
+      \begin{alertblock}{구현 시 주의}
+        $\bar{r}_u$를 공통 아이템만이 아닌
+        \textbf{전체 관측 평점}으로 계산해야\\
+        함의 편향(mean bias) 차이를 올바르게 포착
+      \end{alertblock}
+  \end{columns}
+\end{frame}
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{frame}[shrink=8]{Step 1-B: PCC 손계산 — $\text{PCC}(\text{Bob},\,\text{Alice})$}
+
+  \textbf{Train\_inner 기준} (Bob: $i_1{=}4,\,i_2{=}5,\,i_3{=}1,\,i_4{=}2$\;\;│\;\;Alice: $i_2{=}4,\,i_3{=}2,\,i_4{=}1,\,i_5{=}5$)
+
+  \vspace{0.4em}
+  \begin{columns}[T]
+    \column{0.50\textwidth}
+      \textbf{공통 아이템} $C = \{i_2, i_3, i_4\}$
+      \begin{align*}
+        \bar{r}_B &= \tfrac{4{+}5{+}1{+}2}{4} = 3.0 \\
+        \bar{r}_A &= \tfrac{4{+}2{+}1{+}5}{4} = 3.0
+      \end{align*}
+
+      \vspace{0.1em}
+      \renewcommand{\arraystretch}{1}
+      \resizebox{\linewidth}{!}{%
+      \begin{tabular}{c|cc|cc}
+        \toprule
+        item & $r_{Bi}$ & $r_{Bi}{-}\bar{r}_B$ & $r_{Ai}$ & $r_{Ai}{-}\bar{r}_A$ \\
+        \midrule
+        $i_2$ & 5 & $+2$ & 4 & $+1$ \\
+        $i_3$ & 1 & $-2$ & 2 & $-1$ \\
+        $i_4$ & 2 & $-1$ & 1 & $-2$ \\
+        \bottomrule
+      \end{tabular}
+      }
+
+    \column{0.47\textwidth}
+      \textbf{계산}
+      \begin{align*}
+        \text{Numerator}   &= (+2)(+1)+(-2)(-1)+(-1)(-2) \\
+                           &= 2 + 2 + 2 = \mathbf{6} \\[6pt]
+        \|\mathbf{b}\|     &= \sqrt{4+4+1} = 3{.}0 \\
+        \|\mathbf{a}\|     &= \sqrt{1+1+4} = \sqrt{6} \approx 2{.}449 \\[6pt]
+        \text{PCC}         &= \frac{6}{3 \times \sqrt{6}}
+                            = \frac{2}{\sqrt{6}}
+                           \approx \mathbf{0.8165}
+      \end{align*}
+  
+  \vspace{0.1cm}
+  \begin{itemize}
+        \item PCC(Bob, Alice) $= 0.817$ \textcolor{posblue}{$\uparrow$}
+        \item PCC(Bob, Dave)  $= 0.733$ \textcolor{posblue}{$\uparrow$}
+        \item PCC(Bob, Carol) $= -1.000$ \textcolor{negred}{$\downarrow$}
+      \end{itemize}
+    \end{columns}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Step 2: \texorpdfstring{$\alpha$}{alpha}-변환}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{Step 2: $\alpha$-거듭제곱 변환}
+
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+      \textbf{변환 수식}
+      \[
+        S_{uv}^{(\alpha)} = \max(S_{uv},\; 0)^{\alpha}
+      \]
+      \begin{itemize}
+        \item 음수 유사도 → 0으로 클리핑
+        \item $\alpha > 1$: 상위 이웃 강조 (유사도 분포가 뾰족해짐)
+        \item $\alpha < 1$: 이웃 기여 균등화
+        \item $\alpha = 1$: 원래 PCC 그대로 (Baseline)
+        \item $\alpha = 0$: 균등 가중치 (순수 평균)
+      \end{itemize}
+
+    \column{0.50\textwidth}
+      \textbf{Bob 기준 이웃 유사도 변화}
+      \vspace{0.3em}
+
+      \renewcommand{\arraystretch}{1.25}
+      \begin{tabular}{c|rrrr}
+        \toprule
+        $\alpha$ & Alice & Bob & Carol & Dave \\
+        \midrule
+        0.5 & 0.904 & 0 & 0 & 0.856 \\
+        \rowcolor{hilight}
+        1.0 & 0.817 & 0 & 0 & 0.733 \\
+        2.0 & 0.667 & 0 & 0 & 0.537 \\
+        3.0 & 0.544 & 0 & 0 & 0.393 \\
+        \bottomrule
+      \end{tabular}
+      \vspace{0.3em}
+      \begin{itemize}
+        \item Carol의 유사도: $(-1)^{\alpha}$ → 클리핑 후 0
+        \item $\alpha$ 증가 → Alice/Dave 간 격차 커짐
+      \end{itemize}
+  \end{columns}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Step 3: KNN 예측}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{Step 3-A: KNN 예측 수식}
+
+  아이템 $i$에 대한 사용자 $u$의 예측 평점:
+  \begin{equation*}
+    \hat{r}_{ui} =
+    \frac{\displaystyle\sum_{v \in \mathcal{N}_K(u,i)}\; S_{uv}^{(\alpha)} \cdot r_{vi}}
+         {\displaystyle\sum_{v \in \mathcal{N}_K(u,i)}\; S_{uv}^{(\alpha)}}
+  \end{equation*}
+
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \column{0.45\textwidth}
+      \textbf{이웃 선택 규칙}
+      \begin{itemize}
+        \item $\mathcal{N}_K(u,i)$: 아이템 $i$를 평가한 사용자 중\\
+              $u$와 유사도 상위 $K$명
+        \item 음수 유사도($S_{uv} \le 0$)는 제외
+        \item 이웃 없을 시 사용자 평균으로 Fallback
+      \end{itemize}
+
+    \column{0.52\textwidth}
+      \begin{block}{예측 대상: $(i_5,\;\text{Bob})$}
+        Train 기준 양수 이웃 (아이템 $i_5$ 평가자):
+        \begin{itemize}
+          \item \textbf{Alice}: $S = 0.776,\quad r_{i_5} = 5$
+          \item \textbf{Dave}: $S = 0.704,\quad r_{i_5} = 2$
+          \item \textbf{Carol}: $S = -1.0 \to$ 제외
+        \end{itemize}
+      \end{block}
+  \end{columns}
+\end{frame}
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{frame}{Step 3-B: 예측 손계산 ($\alpha = 1.0$)}
+
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+      \textbf{Alice, Dave를 이웃으로 ($\alpha=1$)}
+      \vspace{0.4em}
+
+      \begin{align*}
+        \hat{r}_{i_5,\text{Bob}}
+        &= \frac{S_\text{Alice} \cdot r_{\text{Alice},i_5}
+                 + S_\text{Dave} \cdot r_{\text{Dave},i_5}}
+                {S_\text{Alice} + S_\text{Dave}} \\[6pt]
+        &= \frac{0{.}776 \times 5 + 0{.}704 \times 2}
+                {0{.}776 + 0{.}704} \\[6pt]
+        &= \frac{3{.}880 + 1{.}408}{1{.}480}
+         \approx \mathbf{3.572}
+      \end{align*}
+
+      \vspace{0.3em}
+      \textbf{참값}: $r_{\text{Bob},i_5} = 4.0$\\[4pt]
+      \textbf{오차}: $|4.0 - 3.572| = 0.428$
+
+    \column{0.42\textwidth}
+      \textbf{$\alpha$에 따른 예측값 비교}
+      \vspace{0.3em}
+
+      \renewcommand{\arraystretch}{1.3}
+      \begin{tabular}{c|rr}
+        \toprule
+        $\alpha$ & $\hat{r}$ & MSE \\
+        \midrule
+        0.5 & 3.536 & 0.215 \\
+        \rowcolor{hilight}
+        1.0 & 3.572 & 0.183 \\
+        2.0 & 3.644 & 0.127 \\
+        3.0 & 3.715 & 0.081 \\
+        \bottomrule
+      \end{tabular}
+      \vspace{0.4em}
+      \begin{itemize}
+        \item $\alpha$ 증가 → Alice 비중 ↑ → 예측값 5에 근접
+        \item 이 Test 항목: 큰 $\alpha$가 유리
+      \end{itemize}
+  \end{columns}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Step 4: $\alpha$ 최적화}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{Step 4-A: Validation 기반 $\alpha$ 최적화}
+
+  \textbf{정규화된 최적화 목표}:
+  \[
+    \alpha^* = \arg\min_{\alpha \ge 0}\;
+    \underbrace{\text{MSE}_{\text{val}}(\alpha)}_{\text{예측 오차}}
+    \;+\;
+    \underbrace{\lambda \cdot |\alpha - 1|}_{\text{정규화 패널티}}
+    \quad (\lambda = 0{.}002)
+  \]
+
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \column{0.50\textwidth}
+      \textbf{정규화의 역할}
+      \begin{itemize}
+        \item $\alpha = 1$에서 멀어질수록 패널티 부과
+        \item Validation 과적합 방지: 극단적인 $\alpha$ 억제
+        \item $\lambda$ 값이 클수록 $\alpha = 1$ (Baseline)에 가까워짐
+      \end{itemize}
+      \vspace{0.5em}
+      \begin{exampleblock}{직관}
+        ``Validation에서 유의미한 개선이 있는 경우에만\\
+        $\alpha$를 바꿔라, 그렇지 않으면 $\alpha=1$''
+      \end{exampleblock}
+
+    \column{0.48\textwidth}
+      \textbf{Search 절차}
+      \begin{enumerate}
+        \item Coarse grid: $\alpha \in\{0.0, 0.5, 1.0, \ldots, 3.0\}$
+        \item Fine search: 최적 주변 $\pm 0.5$ 범위
+        \item Score 최소 $\alpha^*$ 선택
+        \item Phase 2: Train Full로 재학습 후\\
+              Test 평가
+      \end{enumerate}
+  \end{columns}
+\end{frame}
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{frame}[shrink=5]{Step 4-B: Toy Example에서의 $\alpha$ 탐색 결과}
+
+  \begin{columns}[T]
+    \column{0.46\textwidth}
+      \textbf{Validation 탐색 결과} \\
+      {\small Validation: $(i_1,\text{Alice})=5$, $(i_4,\text{Dave})=1$}
+      \vspace{0.3em}
+
+      \renewcommand{\arraystretch}{1.2}
+      \begin{tabular}{c|rrr}
+        \toprule
+        $\alpha$ & $\text{MSE}_\text{val}$ & Penalty & Score \\
+        \midrule
+        0.00 & 2.278 & 0.002 & 2.280 \\
+        0.50 & 1.000 & 0.001 & 1.001 \\
+        \rowcolor{hilight}
+        1.00 & 1.000 & 0.000 & {\bf 1.000} \\
+        1.50 & 1.000 & 0.001 & 1.001 \\
+        2.00 & 1.000 & 0.002 & 1.002 \\
+        3.00 & 1.000 & 0.004 & 1.004 \\
+        \bottomrule
+      \end{tabular}
+      \vspace{0.3em}
+      \[
+        \Rightarrow \quad \alpha^* = 1.0
+      \]
+
+    \column{0.52\textwidth}
+      \textbf{관찰}
+      \begin{itemize}
+        \item Validation MSE가 $\alpha \ge 0.25$에서 \textbf{상수 (1.0)}\\
+              → 각 Validation 항목의 양수 이웃이 1명뿐
+        \item 이웃 1명: 가중치와 무관하게 항상 같은 예측
+        \item 정규화 패널티가 $\alpha = 1$로 선택을 유도
+      \end{itemize}
+      \vspace{0.4em}
+      \begin{alertblock}{Toy의 한계}
+        소규모 행렬에서는 Validation 항목마다
+        양수 이웃 $\ge 2$명을 확보하기 어려워
+        $\alpha$의 효과가 감쇄됨.\\
+        → 대규모 실험에서는 명확히 관찰됨
+      \end{alertblock}
+  \end{columns}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{전체 실험 결과}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}[shrink=5]{실제 실험: MovieLens 10-Fold CV 결과}
+
+  \begin{center}
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{l|c|cc}
+    \toprule
+    \textbf{설정} & \textbf{Test RMSE} & vs.\ Baseline & 평균 $\alpha$ \\
+    \midrule
+    \rowcolor{testgreen!20}
+    \textbf{Baseline} ($\alpha = 1$)    & \textbf{1.006157} & — & 1.000 \\
+    Optimized (원본\;$\lambda=0.01$)    & 1.017182          & +1.10\% \textcolor{negred}{$\uparrow$} & 2.039 \\
+    $\lambda=0.001$                     & 1.026638          & +2.04\% \textcolor{negred}{$\uparrow$} & 3.705 \\
+    $\lambda=0.015$                     & 1.016702          & +1.05\% \textcolor{negred}{$\uparrow$} & 2.027 \\
+    $\lambda=0.030$ (최적 $\lambda$)    & 1.011311          & +0.51\% \textcolor{negred}{$\uparrow$} & 1.570 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{columns}[T]
+    \column{0.47\textwidth}
+      \textbf{핵심 발견}
+      \begin{itemize}
+        \item $\alpha$ 최적화가 오히려 Test에서 \textbf{성능 저하}
+        \item $\lambda$ 증가 → 개선되나 Baseline에 미달
+        \item $\alpha=1$ (PCC 원래값)이 가장 Robust
+      \end{itemize}
+
+    \column{0.50\textwidth}
+      \textbf{원인 분석}
+      \begin{itemize}
+        \item Validation에서 $\alpha \neq 1$이 유리 → 선택
+        \item 하지만 Test에서는 일반화 실패
+        \item \textbf{Validation → Test 과적합}
+        \item 17개 방법 중 76.5\%에서 $\alpha=1$이 우위
+      \end{itemize}
+  \end{columns}
+\end{frame}
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{frame}[shrink=5]{왜 $\alpha$ 최적화가 과적합 되는가?}
+
+  \begin{block}{메커니즘 분석}
+    \begin{enumerate}
+      \item Validation set에서 $\alpha \neq 1$이 MSE 최소화에 유리
+      \item 해당 $\alpha$를 Test에 적용 → 오히려 성능 저하
+      \item Validation $\neq$ Test 분포 (대표성 부족)
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+      \textbf{가설 A: Validation 대표성 부족}
+      \begin{itemize}
+        \item Validation의 선호 패턴이 Test와 불일치
+        \item $\alpha$는 비선형 변환 $(S^\alpha)$ → 작은 차이도 과적합 신호
+      \end{itemize}
+      \vspace{0.4em}
+      \textbf{가설 B: 방법별 불균형}
+      \begin{itemize}
+        \item 17개 방법 중 4개만 $\alpha$ 최적화로 개선
+        \item 대다수에서 $\alpha=1$이 Robust
+      \end{itemize}
+
+    \column{0.48\textwidth}
+      \textbf{가설 C: 단순함의 이점}
+      \begin{itemize}
+        \item $\alpha=1$: 모든 (method, $K$, TopN)에 일관성
+        \item 최적화: 조합마다 다른 $\alpha$ → 분산 증가
+        \item \textit{``단순한 모델이 평균적으로 더 Robust''}
+      \end{itemize}
+      \vspace{0.4em}
+      \begin{exampleblock}{결론}
+        Validation 기반 $\alpha$ 최적화 자체가
+        Test 성능 향상을 보장하지 않음.
+        $\alpha = 1$ (Baseline)을 추천.
+      \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{결론 및 향후 연구}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}[shrink=5]{결론 요약}
+
+  \begin{columns}[T]
+    \column{0.52\textwidth}
+      \textbf{Toy Example을 통해 확인한 내용}
+      \begin{enumerate}
+        \item \textbf{PCC 유사도}: 공통 아이템 기반 사용자 간\\
+              상관 계수 (수식 \& 손계산 검증)
+        \item \textbf{$\alpha$-변환}: $S^\alpha$로 이웃 기여도 조절\\
+              $\alpha$ 증가 → 상위 이웃 집중
+        \item \textbf{KNN 예측}: 유사도 가중 평균\\
+              $\alpha=1$ 기준 $\hat{r} = 3.57$ (참값 4.0)
+        \item \textbf{$\alpha$ 최적화}: Validation MSE + 정규화 패널티\\
+              소규모에서는 한계, 대규모에서 과적합 확인
+      \end{enumerate}
+
+    \column{0.45\textwidth}
+      \textbf{향후 연구 방향}
+      \begin{itemize}
+        \item 방법별 $\alpha$를 개별 최적화 (일괄 최적화 대신)
+        \item 정규화 강도 $\lambda$의 Fold별 최적화
+        \item RMSE 이외 목적함수 (Precision@N 기반 최적화)
+        \item 나머지 Fold 8–10 실험 완료
+        \item 17개 유사도 지표별 최적 설정 표 작성
+      \end{itemize}
+      \vspace{0.4em}
+      \begin{alertblock}{학회 발표 방향}
+        ``$\alpha=1$ Baseline의 Robustness''를\\
+        핵심 메시지로 제시
+      \end{alertblock}
+  \end{columns}
+\end{frame}
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{frame}[shrink=8]{Toy Example 전체 흐름 정리}
+
+  \begin{center}
+  \begin{tikzpicture}[
+    flowbox/.style={draw, rounded corners=4pt, minimum width=2.9cm,
+                 minimum height=0.85cm, align=center, font=\small,
+                 fill=blue!8},
+    result/.style={flowbox, fill=green!15},
+    arrow/.style={->, thick},
+    label/.style={font=\tiny, text=mutedgray}
+  ]
+    \node[flowbox] (data)  {평점 행렬 $R$\\{\tiny 4 users × 5 items}};
+    \node[flowbox, right=1.2cm of data]  (split) {Train / Val / Test\\분리};
+    \node[flowbox, right=1.2cm of split] (pcc)   {PCC 유사도\\$S_{uv}$ 계산};
+    \node[flowbox, below=0.9cm of pcc]   (alpha) {$\alpha$-변환\\$S^\alpha$};
+    \node[flowbox, left=1.2cm of alpha]  (knn)   {KNN 가중 예측\\$\hat{r}$};
+    \node[flowbox, left=1.2cm of knn]    (opt)   {$\alpha^*$ 선택\\(Val+Penalty)};
+    \node[result, below=0.9cm of opt] (eval)  {Test 평가\\RMSE·MAD·P@N·R@N};
+
+    \draw[arrow] (data)  -- (split);
+    \draw[arrow] (split) -- (pcc);
+    \draw[arrow] (pcc)   -- (alpha);
+    \draw[arrow] (alpha) -- (knn);
+    \draw[arrow] (knn)   -- (opt);
+    \draw[arrow] (opt)   -- (eval);
+
+    \node[label, above=0.1cm of split] {Fold 분리};
+    \node[label, above=0.1cm of pcc]   {Train\_inner};
+    \node[label, right=0.1cm of alpha] {$\max(S,0)^\alpha$};
+    \node[label, below=0.1cm of knn]   {Validation 기준};
+    \node[label, left=0.2cm of eval]   {Test 1회 사용};
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.2em}
+  \begin{center}
+    \small
+    \textbf{최종 결론}: 대규모 실험에서 $\alpha=1$ (Baseline)이\\
+    모든 설정 중 Test RMSE 최저. $\alpha$ 최적화는 오히려 과적합 유발.
+  \end{center}
+\end{frame}
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{frame}[plain]
+  \begin{center}
+    \vspace{2cm}
+    {\LARGE 감사합니다}\\[1.5em]
+    {\large 질문 및 피드백 환영합니다}\\[2em]
+    \begin{tabular}{ll}
+      \textbf{코드 위치} & \texttt{notebooks/toy\_example.ipynb} \\
+      \textbf{참고 문서} & \texttt{docs/LAMBDA\_ANALYSIS\_SUMMARY.md} \\
+      \textbf{실험 결과} & \texttt{results/lambda\_optimization/}
+    \end{tabular}
+  \end{center}
+\end{frame}
+%─────────────────────────────────────────────────────────────────────────────
+
+%═════════════════════════════════════════════════════════════════════════════
+%  부록 (Appendix)
+%═════════════════════════════════════════════════════════════════════════════
+\appendix
+
+\begin{frame}{부록 A: 17개 유사도 지표 목록}
+  \begin{columns}[T]
+    \column{0.45\textwidth}
+      \begin{enumerate}
+        \item PCC (Pearson Correlation)
+        \item Cosine
+        \item MSD (Mean Squared Difference)
+        \item JMSD (Jaccard × MSD)
+        \item Jaccard
+        \item SPCC (Sigmoid-weighted PCC)
+        \item Kendall's $\tau_b$
+        \item ACOS (Adjusted Cosine)
+        \item SRC (Spearman Rank Correlation)
+      \end{enumerate}
+    \column{0.45\textwidth}
+      \begin{enumerate}
+        \setcounter{enumi}{9}
+        \item CPCC (Constrained PCC)
+        \item ARI (Adjusted Rand Index)
+        \item AMI (Adjusted Mutual Info)
+        \item Chebyshev
+        \item Euclidean
+        \item Manhattan
+        \item IPWR (Inverse Power-Weighted)
+        \item ITR (Item-Total Ratio)
+      \end{enumerate}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{부록 B: 평가 지표 수식}
+  \begin{align*}
+    \text{RMSE} &= \sqrt{\frac{1}{|T|}\sum_{(u,i)\in T}(\hat{r}_{ui} - r_{ui})^2} \\[6pt]
+    \text{MAD}  &= \frac{1}{|T|}\sum_{(u,i)\in T}|\hat{r}_{ui} - r_{ui}| \\[6pt]
+    \text{Precision}@N &= \frac{|\{\text{추천 Top-}N\} \cap \{\text{실제 선호}\}|}
+                               {\min(N,|\text{후보}|)} \\[6pt]
+    \text{Recall}@N    &= \frac{|\{\text{추천 Top-}N\} \cap \{\text{실제 선호}\}|}
+                               {|\{\text{실제 선호}\}|}
+  \end{align*}
+  {\small 실제 선호 기준: 평점 $\geq 4.0$ (5점 척도)}
+\end{frame}
+
+\begin{frame}[shrink=5]{부록 C: Toy Example 손계산 — $\alpha=2.0$ 예측}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+      \textbf{$\alpha = 2.0$ 적용}
+      \vspace{0.4em}
+
+      Train 기준 유사도: $S_A = 0.776$, $S_D = 0.704$
+      \begin{align*}
+        S_A^{(2)} &= 0.776^2 = 0.602\\
+        S_D^{(2)} &= 0.704^2 = 0.496\\[6pt]
+        \hat{r}   &= \frac{0{.}602 \times 5 + 0{.}496 \times 2}
+                          {0{.}602 + 0{.}496}\\
+                  &= \frac{3{.}010 + 0{.}992}{1{.}098}
+                   \approx 3{.}644
+      \end{align*}
+      \textbf{MSE} $= (4.0 - 3.644)^2 = 0.127$
+
+    \column{0.42\textwidth}
+      \textbf{$\alpha = 3.0$인 경우}
+      \vspace{0.4em}
+
+      \begin{align*}
+        S_A^{(3)} &= 0.776^3 = 0.468\\
+        S_D^{(3)} &= 0.704^3 = 0.349\\[6pt]
+        \hat{r}   &= \frac{0{.}468\times5 + 0{.}349\times2}{0{.}817}\\
+                  &\approx 3{.}715
+      \end{align*}
+      \textbf{MSE} $= 0.081$
+
+      \begin{block}{요약}
+        높은 $\alpha$가 이 Test 항목에서 유리\\
+        실제 대규모 실험과 \textbf{반대} 경향\\
+        → Toy의 한계
+      \end{block}
+  \end{columns}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,10 @@
+\beamer@sectionintoc {1}{실험 목적과 설정}{3}{0}{1}
+\beamer@sectionintoc {2}{핵심 결과}{5}{0}{2}
+\beamer@sectionintoc {3}{Fold·유사도 분해 분석}{8}{0}{3}
+\beamer@sectionintoc {4}{원인 분석}{12}{0}{4}
+\beamer@sectionintoc {5}{실무 권고안}{16}{0}{5}
+\beamer@sectionintoc {6}{Claude 분석: 10-Fold 전체 재검토}{19}{0}{6}
+\beamer@sectionintoc {7}{파이프라인 점검: 잠재적 이슈 2가지}{25}{0}{7}
+\beamer@sectionintoc {8}{inner\_sim 실험: Validation 누수 제거 효과 (Fold 01)}{28}{0}{8}
+\beamer@sectionintoc {9}{V5 vs V6 전체 비교: Leakage 제거 효과 (10-Fold)}{35}{0}{9}
+\beamer@sectionintoc {10}{추가 분석: $\lambda =0$ 과적합 양상 및 신규 페날티 비교}{45}{0}{10}

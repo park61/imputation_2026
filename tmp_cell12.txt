@@ -1,0 +1,21 @@
+## Step 7: Multi-Fold Experiment Loop with Incremental Strategy
+
+### 🔬 Experimental Data Flow
+
+**Critical: Two-Phase Design to Prevent Test Leakage**
+
+#### Phase 1: Alpha Optimization (VALIDATION data)
+- **Learning**: `train_inner.csv` (~72% of full data)
+- **Evaluation**: `validation.csv` (~18% of full data)
+- **Purpose**: Find optimal α for each (method, K) combination
+- **Output**: `alpha_optimization_history_*.csv`
+- **⚠️ TEST DATA NEVER USED** in this phase
+
+#### Phase 2: Final Evaluation (TEST data)
+- **Learning**: `train.csv` (~90% of full data, includes train_inner + validation)
+- **Evaluation**: `test.csv` (~10% of full data)
+- **Purpose**: Fair comparison of optimal α vs α=1.0 baseline
+- **Output**: `grid_search_results_*.csv` with type='optimized' and type='baseline'
+- **✅ BOTH USE SAME TEST DATA** for fair comparison
+
+**Result**: No test leakage, fair comparison guaranteed!

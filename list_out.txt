@@ -1,0 +1,175 @@
+총 232개 파일에 msd/jmsd/acos 행 존재:
+
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_20260311_132613.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.0001_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.0002_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.0003_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.0005_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.0007_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.001_v1_20260311_180440.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.001_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.002_v1_20260311_180440.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.002_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.003_v1_20260311_180440.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.003_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.005_v1_20260311_180440.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.005_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.015_v1_20260311_180440.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.015_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.01_v1_20260311_180440.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.01_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.025_v1_20260311_180440.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.025_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.02_v1_20260311_180440.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.02_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.03_v1_20260311_180440.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.03_v1_20260312_082958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_01\grid_search_results_inner_lambda_0.0_v1_20260408_082727.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_20260311_232135.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_20260311_232201.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_20260311_232233.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_inner_lambda_0.0005_v1_20260318_090114.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_inner_lambda_0.001_v1_20260318_090114.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_inner_lambda_0.002_v1_20260318_090114.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_inner_lambda_0.003_v1_20260318_090114.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_inner_lambda_0.005_v1_20260318_090114.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_inner_lambda_0.015_v1_20260318_090114.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_inner_lambda_0.01_v1_20260318_090114.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_inner_lambda_0.02_v1_20260318_090114.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_inner_lambda_0.03_v1_20260318_090114.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_02\grid_search_results_inner_lambda_0.0_v1_20260408_084031.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_20260312_051052.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_20260312_051115.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_20260312_051248.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_inner_lambda_0.0005_v1_20260318_115903.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_inner_lambda_0.001_v1_20260318_115903.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_inner_lambda_0.002_v1_20260318_115903.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_inner_lambda_0.003_v1_20260318_115903.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_inner_lambda_0.005_v1_20260318_115903.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_inner_lambda_0.015_v1_20260318_115903.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_inner_lambda_0.01_v1_20260318_115903.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_inner_lambda_0.02_v1_20260318_115903.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_inner_lambda_0.03_v1_20260318_115903.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_03\grid_search_results_inner_lambda_0.0_v1_20260408_085336.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_20260312_110249.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_20260312_110316.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_20260312_110545.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_inner_lambda_0.0005_v1_20260318_134746.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_inner_lambda_0.001_v1_20260318_134746.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_inner_lambda_0.002_v1_20260318_134746.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_inner_lambda_0.003_v1_20260318_134746.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_inner_lambda_0.005_v1_20260318_134746.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_inner_lambda_0.015_v1_20260318_134746.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_inner_lambda_0.01_v1_20260318_134746.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_inner_lambda_0.02_v1_20260318_134746.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_inner_lambda_0.03_v1_20260318_134746.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_04\grid_search_results_inner_lambda_0.0_v1_20260408_090637.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_20260312_171114.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_20260312_171143.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_20260312_171504.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_inner_lambda_0.0005_v1_20260318_153654.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_inner_lambda_0.001_v1_20260318_153654.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_inner_lambda_0.002_v1_20260318_153654.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_inner_lambda_0.003_v1_20260318_153654.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_inner_lambda_0.005_v1_20260318_153654.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_inner_lambda_0.015_v1_20260318_153654.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_inner_lambda_0.01_v1_20260318_153654.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_inner_lambda_0.02_v1_20260318_153654.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_inner_lambda_0.03_v1_20260318_153654.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_05\grid_search_results_inner_lambda_0.0_v1_20260408_091936.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_20260311_202254.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_inner_lambda_0.0005_v1_20260318_172541.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_inner_lambda_0.001_v1_20260318_172541.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_inner_lambda_0.002_v1_20260318_172541.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_inner_lambda_0.003_v1_20260318_172541.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_inner_lambda_0.005_v1_20260318_172541.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_inner_lambda_0.015_v1_20260318_172541.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_inner_lambda_0.01_v1_20260318_172541.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_inner_lambda_0.02_v1_20260318_172541.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_inner_lambda_0.03_v1_20260318_172541.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_06\grid_search_results_inner_lambda_0.0_v1_20260408_083304.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_20260312_024741.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_inner_lambda_0.0005_v1_20260318_191358.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_inner_lambda_0.001_v1_20260318_191358.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_inner_lambda_0.002_v1_20260318_191358.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_inner_lambda_0.003_v1_20260318_191358.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_inner_lambda_0.005_v1_20260318_191358.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_inner_lambda_0.015_v1_20260318_191358.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_inner_lambda_0.01_v1_20260318_191358.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_inner_lambda_0.02_v1_20260318_191358.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_inner_lambda_0.03_v1_20260318_191358.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_07\grid_search_results_inner_lambda_0.0_v1_20260408_084959.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_20260312_090735.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_inner_lambda_0.0005_v1_20260318_210149.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_inner_lambda_0.001_v1_20260318_210149.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_inner_lambda_0.002_v1_20260318_210149.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_inner_lambda_0.003_v1_20260318_210149.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_inner_lambda_0.005_v1_20260318_210149.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_inner_lambda_0.015_v1_20260318_210149.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_inner_lambda_0.01_v1_20260318_210149.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_inner_lambda_0.02_v1_20260318_210149.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_inner_lambda_0.03_v1_20260318_210149.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_08\grid_search_results_inner_lambda_0.0_v1_20260408_090701.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_20260312_153137.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_inner_lambda_0.0005_v1_20260318_224958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_inner_lambda_0.001_v1_20260318_224958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_inner_lambda_0.002_v1_20260318_224958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_inner_lambda_0.003_v1_20260318_224958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_inner_lambda_0.005_v1_20260318_224958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_inner_lambda_0.015_v1_20260318_224958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_inner_lambda_0.01_v1_20260318_224958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_inner_lambda_0.02_v1_20260318_224958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_inner_lambda_0.03_v1_20260318_224958.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_09\grid_search_results_inner_lambda_0.0_v1_20260408_092409.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_20260312_215403.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_inner_lambda_0.0005_v1_20260319_003803.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_inner_lambda_0.001_v1_20260319_003803.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_inner_lambda_0.002_v1_20260319_003803.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_inner_lambda_0.003_v1_20260319_003803.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_inner_lambda_0.005_v1_20260319_003803.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_inner_lambda_0.015_v1_20260319_003803.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_inner_lambda_0.01_v1_20260319_003803.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_inner_lambda_0.02_v1_20260319_003803.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_inner_lambda_0.03_v1_20260319_003803.csv
+  [  600/ 3400 rows]  results/inner_sim\fold_10\grid_search_results_inner_lambda_0.0_v1_20260408_094122.csv
+  [10820/67420 rows]  results/inner_sim\fold_01\alpha_optimization_history_20260311_132613.csv
+  [10820/68920 rows]  results/inner_sim\fold_02\alpha_optimization_history_20260311_232135.csv
+  [10820/68920 rows]  results/inner_sim\fold_02\alpha_optimization_history_20260311_232201.csv
+  [10820/68920 rows]  results/inner_sim\fold_02\alpha_optimization_history_20260311_232233.csv
+  [10920/67720 rows]  results/inner_sim\fold_03\alpha_optimization_history_20260312_051052.csv
+  [10920/67720 rows]  results/inner_sim\fold_03\alpha_optimization_history_20260312_051115.csv
+  [10920/67720 rows]  results/inner_sim\fold_03\alpha_optimization_history_20260312_051248.csv
+  [10710/68010 rows]  results/inner_sim\fold_04\alpha_optimization_history_20260312_110249.csv
+  [10710/68010 rows]  results/inner_sim\fold_04\alpha_optimization_history_20260312_110316.csv
+  [10710/68010 rows]  results/inner_sim\fold_04\alpha_optimization_history_20260312_110545.csv
+  [10920/68120 rows]  results/inner_sim\fold_05\alpha_optimization_history_20260312_171114.csv
+  [10920/68120 rows]  results/inner_sim\fold_05\alpha_optimization_history_20260312_171143.csv
+  [10920/68120 rows]  results/inner_sim\fold_05\alpha_optimization_history_20260312_171504.csv
+  [10930/67730 rows]  results/inner_sim\fold_06\alpha_optimization_history_20260311_202254.csv
+  [10920/68720 rows]  results/inner_sim\fold_07\alpha_optimization_history_20260312_024741.csv
+  [10920/68020 rows]  results/inner_sim\fold_08\alpha_optimization_history_20260312_090735.csv
+  [11130/67930 rows]  results/inner_sim\fold_09\alpha_optimization_history_20260312_153137.csv
+  [10920/68120 rows]  results/inner_sim\fold_10\alpha_optimization_history_20260312_215403.csv
+  [43370/272770 rows]  results/inner_sim/combined\all_folds_alpha_history_20260312_171114.csv
+  [43370/272770 rows]  results/inner_sim/combined\all_folds_alpha_history_20260312_171143.csv
+  [43370/272770 rows]  results/inner_sim/combined\all_folds_alpha_history_20260312_171505.csv
+  [54820/340520 rows]  results/inner_sim/combined\all_folds_alpha_history_20260312_215404.csv
+  [ 3000/17000 rows]  results/inner_sim/combined\all_folds_grid_results_20260312_171114.csv
+  [ 3000/17000 rows]  results/inner_sim/combined\all_folds_grid_results_20260312_171143.csv
+  [ 3000/17000 rows]  results/inner_sim/combined\all_folds_grid_results_20260312_171505.csv
+  [ 3000/17000 rows]  results/inner_sim/combined\all_folds_grid_results_20260312_215404.csv
+  [  150/  850 rows]  results\alpha_comparison_history_vs_grid.csv
+  [  150/  850 rows]  results\topn_alpha_variation_analysis.csv
+  [ 3000/17000 rows]  results\fold_01\alpha_baseline_vs_optimized_comparison_20260127_171034.csv
+  [ 3000/17000 rows]  results\fold_01\alpha_baseline_vs_optimized_comparison_20260127_172044.csv
+  [12600/61260 rows]  results\fold_01\alpha_optimization_history_20260117_003457.csv
+  [  300/ 1700 rows]  results\fold_01\grid_search_results_reeval_lambda_0.001_v2_20260127_165902.csv
+  [  300/ 1700 rows]  results\fold_01\grid_search_results_reeval_lambda_0.002_v2_20260127_165902.csv
+  [  300/ 1700 rows]  results\fold_01\grid_search_results_reeval_lambda_0.003_v2_20260127_165902.csv
+  [  300/ 1700 rows]  results\fold_01\grid_search_results_reeval_lambda_0.004_v2_20260127_165902.csv
+  [  300/ 1700 rows]  results\fold_01\grid_search_results_reeval_lambda_0.005_v2_20260127_165902.csv
+  [  300/ 1700 rows]  results\fold_01\grid_search_results_reeval_lambda_0.015_v2_20260127_165902.csv
+  [  300/ 1700 rows]  results\fold_01\grid_search_results_reeval_lambda_0.01_v2_20260127_165902.csv
+  [  300/ 1700 rows]  results\fold_01\grid_search_results_reeval_lambda_0.025_v2_20260127_165902.csv
+  [  300/ 1700 rows]  results\fold_01\grid_search_results_reeval_lambda_0.02_v2_20260127_165902.csv
+  [  300/ 1700 rows]  results\fold_01\grid_search_results_reeval_lambda_0.03_v2_20260127_165902.csv

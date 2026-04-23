@@ -1,0 +1,279 @@
+% !TeX program = xelatex
+%─────────────────────────────────────────────────────────────────────────────
+%  movielens_step_by_step_verification.tex
+%  Beamer: MovieLens 실데이터 단계별 동작 검증 보고
+%─────────────────────────────────────────────────────────────────────────────
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage{fontspec}
+\usepackage[hangul]{kotex}
+\setmonofont{Consolas}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\usefonttheme[onlymath]{serif}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.40\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+      \usebeamerfont{author in head/foot}\insertshortauthor
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.40\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+      \usebeamerfont{title in head/foot}\insertshorttitle
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.20\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+      \usebeamerfont{date in head/foot}
+      \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+    \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows}
+
+\definecolor{testgreen}{RGB}{0,150,80}
+\definecolor{negred}{RGB}{210,40,40}
+
+\title[MovieLens Verification]{MovieLens단계별 검증 \\
+\small \texttt{main\_experiment\_grid\_search\_0116\_v5.ipynb} 기준}
+\subtitle{최종 동작 확인}
+\author[발표자]{}
+\institute{}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{목차}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{검증 목표}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{왜 이 검증을 수행했는가?}
+  \begin{block}{핵심 목표}
+    실제 MovieLens 데이터에서도 확보하여,
+    실험 파이프라인이 의도대로 작동했음을 단계별로 확인한다.
+  \end{block}
+
+  \vspace{0.4em}
+  \textbf{검증 기준(고정)}
+  \begin{itemize}
+    \item 기준 노트북: \texttt{main\_experiment\_grid\_search\_0116\_v5.ipynb}
+    \item Fold: [8, 9, 10]
+    \item \(K\): 10\textasciitilde100 (step=10), TopN: 5\textasciitilde50
+    \item 정규화: \(\lambda = 0.002\), score = MSE + \(\lambda|\alpha-1|\)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{검증 노트북 구성}
+  \textbf{생성 노트북}: \texttt{notebooks/movielens\_step\_by\_step\_verification.ipynb}
+
+  \vspace{0.4em}
+  \begin{enumerate}
+    \item split 파일 존재/shape/희소도 확인
+    \item train\_inner/validation/test leakage 점검
+    \item 결과 파일 조건(v5 설정) 일치 여부 점검
+    \item 실제 \(\alpha\) 선택 로직 재검산 (샘플 케이스)
+    \item baseline vs optimized 성능 비교
+    \item 최종 체크리스트 PASS/FAIL
+  \end{enumerate}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Step-by-Step 결과}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{Step 1: split 데이터 로딩 확인 (실데이터)}
+  \begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{c|c|c|c}
+    \toprule
+    Fold & train\_inner observed & validation observed & test observed \\
+    \midrule
+    8  & 72,189 & 18,073 & 9,738 \\
+    9  & 72,259 & 18,089 & 9,652 \\
+    10 & 72,319 & 18,094 & 9,587 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.4em}
+  \begin{itemize}
+    \item 모든 split 파일(train\_inner, validation, train, test) 존재 확인
+    \item 데이터 shape는 세 fold 모두 1682\(\times\)943
+    \item 노트북에서 실제 평점 샘플(상위 5행\(\times\)6열) 출력 확인
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Step 2: Leakage 점검}
+  \begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{c|c|c|c|c|c}
+    \toprule
+    Fold & $\mathrm{inner}\cap\mathrm{val}$ & $\mathrm{inner}\cap\mathrm{test}$ & $\mathrm{val}\cap\mathrm{test}$ & train extra & train missing \\
+    \midrule
+    8  & 0 & 0 & 0 & 0 & 0 \\
+    9  & 0 & 0 & 0 & 0 & 0 \\
+    10 & 0 & 0 & 0 & 0 & 0 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.4em}
+  \begin{alertblock}{결론}
+    데이터 누수 없음. (\texttt{Leakage check PASS})
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Step 3: 결과 파일 조건 일치(v5 설정)}
+  \begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{c|c|c|c|c|c}
+    \toprule
+    Fold & rows & methods & K\_ok & TopN\_ok & types \\
+    \midrule
+    8  & 3400 & 17 & True & True & baseline, optimized \\
+    9  & 3400 & 17 & True & True & baseline, optimized \\
+    10 & 3400 & 17 & True & True & baseline, optimized \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.3em}
+  \begin{itemize}
+    \item alpha history row 수: fold8=55,320 / fold9=55,620 / fold10=54,900
+    \item \texttt{v5 조건 일치 PASS}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Step 4: \texorpdfstring{$\alpha$}{alpha} 선택 로직 재검산 (실제 샘플)}
+  \textbf{샘플 케이스}: fold=8, method=pcc, K=20, TopN=10
+
+  \vspace{0.4em}
+  \begin{block}{재검산 결과}
+    \begin{itemize}
+      \item history 최저 regularized score의 alpha = 3.0
+      \item grid optimized alpha = 3.0
+      \item 두 값 일치 (same alpha = True)
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.4em}
+  \begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{c|c|c|c|c}
+    \toprule
+    baseline \(\alpha\) & baseline RMSE & optimized \(\alpha\) & optimized RMSE & opt-base \\
+    \midrule
+    1.0 & 1.023513 & 3.0 & 1.040430 & +0.016917 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Step 5: Fold별 평균 성능 비교 (v5 범위)}
+  \begin{center}
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabular}{c|c|c|c}
+    \toprule
+    Fold & Baseline RMSE(mean) & Optimized RMSE(mean) & \(\Delta\%\) \\
+    \midrule
+    8  & 1.027395 & 1.044802 & +1.694\% \\
+    9  & 1.005957 & 1.026370 & +2.029\% \\
+    10 & 1.012023 & 1.030954 & +1.871\% \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.4em}
+  \begin{block}{Overall (Fold 8\textasciitilde10)}
+    Baseline mean RMSE = 1.015125 \\
+    Optimized mean RMSE = 1.034042 \\
+    Difference = +1.864\% (optimized 악화)
+  \end{block}
+\end{frame}
+
+\begin{frame}[shrink=5]{Step 6: 시각화 기반 구체적 패턴 분석 (v5)}
+  \textbf{참고 자료}: \texttt{visualize\_grid\_results\_v5\_260128.ipynb} (Fold 6, 7 대상)
+
+  \vspace{0.4em}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \textbf{Validation vs Test 개선도 비교}
+      \begin{itemize}
+        \item \textbf{Validation}: 대부분의 점이 대각선 아래(Optimized 우수)에 분포.
+        \item \textbf{Test}: 대부분의 점이 대각선 위(Baseline 우수)로 이동.
+        \item 즉, Validation에서의 성능 향상이 Test로 이어지지 않는 전형적인 \textbf{과적합(Overfitting)} 패턴 확인.
+      \end{itemize}
+
+    \column{0.48\textwidth}
+      \textbf{정규화(\(\lambda\)) 및 유사도별 편차}
+      \begin{itemize}
+        \item \(\lambda\) 값이 커질수록(정규화 강도 증가) Test에서의 성능 악화 폭이 줄어드는 경향 관찰.
+        \item \texttt{acos}, \texttt{msd} 등 일부 유사도에서는 Optimized가 Test에서도 우수하나, \texttt{pcc}, \texttt{cosine} 등 다수 유사도에서 크게 악화됨.
+      \end{itemize}
+  \end{columns}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{최종 판단}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{Final Checklist}
+  \begin{center}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{l|c}
+    \toprule
+    \textbf{검증 항목} & \textbf{결과} \\
+    \midrule
+    split files available & True \\
+    no leakage across split & True \\
+    v5 condition match & True \\
+    alpha selection reproducible (sample) & True \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{alertblock}{최종 판정}
+    \textbf{FINAL VERDICT: PASS} \\
+    MovieLens 실데이터 기준으로 v5 실험이 단계별 검증에서 의도대로 동작함을 확인.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{교수님 보고용 핵심 메시지}
+  \begin{enumerate}
+    \item \textbf{재현성}: v5 설정(fold/K/TopN/\(\lambda\))과 결과 파일이 정합적
+    \item \textbf{타당성}: train\_inner/validation/test 간 leakage 없음
+    \item \textbf{로직 검증}: 실제 \(\alpha\) 선택이 regularized score 기준과 일치
+    \item \textbf{결과 해석}: v5 범위(fold 8\textasciitilde10)에서는 optimized가 평균적으로 열세
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \begin{block}{즉시 공유 가능한 산출물}
+    \texttt{notebooks/movielens\_step\_by\_step\_verification.ipynb} \\
+    \texttt{documentation/movielens\_step\_by\_step\_verification.tex}
+  \end{block}
+\end{frame}
+
+\begin{frame}[plain]
+  \begin{center}
+    \vspace{2cm}
+    {\LARGE 감사합니다}\\[1.2em]
+    {\large 질문 및 피드백 환영합니다}
+  \end{center}
+\end{frame}
+
+\end{document}

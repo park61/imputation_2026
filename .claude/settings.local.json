@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pkill -f \"main_experiment_v6_inner_sim.py\")",
+      "Bash(taskkill /F /IM python.exe /T)",
+      "Bash(tail -5 \"d:/Dropbox/python_workspace\\(백업\\)/imputation_project/experiment_v6_log.txt\")",
+      "Bash(ls \"d:/Dropbox/python_workspace\\(백업\\)/imputation_project/results/inner_sim/\")",
+      "Bash(ls \"d:/Dropbox/python_workspace\\(백업\\)/imputation_project/results/inner_sim/fold_02/\")"
+    ]
+  }
+}

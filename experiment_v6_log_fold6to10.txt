@@ -1,0 +1,1093 @@
+================================================================================
+  main_experiment_v6_inner_sim.py
+  Sim source: sim_inner_{method}.npy  (train_inner, no leakage)
+  Start: 2026-03-11 14:00:36
+================================================================================
+
+
+================================================================================
+  FOLD 06
+================================================================================
+  train_inner: (1682, 943)  validation: (1682, 943)
+  train_full : (1682, 943)   test      : (1682, 943)
+
+  [ACOS]
+    K=10: alpha 최적화... /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/main_experiment_v6_inner_sim.py:84: RuntimeWarning: Mean of empty slice
+  item_means  = np.nanmean(XX, axis=1)
+α*=7.000  RMSE opt=1.0412 base=1.1054
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0239 base=1.0595
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0165 base=1.0465
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0147 base=1.0417
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0141 base=1.0395
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0137 base=1.0382
+    K=70: alpha 최적화... α*=0.100  RMSE opt=1.0143 base=1.0377
+    K=80: alpha 최적화... α*=0.100  RMSE opt=1.0142 base=1.0372
+    K=90: alpha 최적화... α*=0.100  RMSE opt=1.0147 base=1.0372
+    K=100: alpha 최적화... α*=0.100  RMSE opt=1.0151 base=1.0372
+
+  [AMI]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0583 base=1.0744
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0335 base=1.0481
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0277 base=1.0409
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0235 base=1.0367
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0219 base=1.0349
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0217 base=1.0342
+    K=70: alpha 최적화... α*=0.050  RMSE opt=1.0211 base=1.0336
+    K=80: alpha 최적화... α*=0.050  RMSE opt=1.0213 base=1.0334
+    K=90: alpha 최적화... α*=0.000  RMSE opt=1.0236 base=1.0331
+    K=100: alpha 최적화... α*=0.000  RMSE opt=1.0238 base=1.0331
+
+  [ARI]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0521 base=1.0720
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0328 base=1.0495
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0254 base=1.0416
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0224 base=1.0384
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0201 base=1.0365
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0198 base=1.0358
+    K=70: alpha 최적화... α*=0.050  RMSE opt=1.0196 base=1.0352
+    K=80: alpha 최적화... α*=0.050  RMSE opt=1.0194 base=1.0349
+    K=90: alpha 최적화... α*=0.050  RMSE opt=1.0194 base=1.0347
+    K=100: alpha 최적화... α*=0.050  RMSE opt=1.0195 base=1.0346
+
+  [CHEBYSHEV]
+    K=10: alpha 최적화... α*=0.500  RMSE opt=1.0162 base=1.0170
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0039 base=1.0039
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0018 base=1.0018
+    K=40: alpha 최적화... α*=1.250  RMSE opt=1.0014 base=1.0020
+    K=50: alpha 최적화... α*=1.400  RMSE opt=1.0016 base=1.0026
+    K=60: alpha 최적화... α*=1.550  RMSE opt=1.0019 base=1.0035
+    K=70: alpha 최적화... α*=1.650  RMSE opt=1.0025 base=1.0045
+    K=80: alpha 최적화... α*=1.750  RMSE opt=1.0028 base=1.0052
+    K=90: alpha 최적화... α*=1.800  RMSE opt=1.0036 base=1.0064
+    K=100: alpha 최적화... α*=1.850  RMSE opt=1.0041 base=1.0073
+
+  [COSINE]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0324 base=1.0324
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0147 base=1.0147
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0103 base=1.0103
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0095 base=1.0095
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0105 base=1.0105
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0118 base=1.0118
+    K=70: alpha 최적화... α*=1.100  RMSE opt=1.0121 base=1.0122
+    K=80: alpha 최적화... α*=1.350  RMSE opt=1.0123 base=1.0124
+    K=90: alpha 최적화... α*=1.500  RMSE opt=1.0128 base=1.0130
+    K=100: alpha 최적화... α*=1.600  RMSE opt=1.0133 base=1.0137
+
+  [CPCC]
+    K=10: alpha 최적화... α*=0.700  RMSE opt=1.0137 base=1.0141
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9939 base=0.9939
+    K=30: alpha 최적화... α*=1.000  RMSE opt=0.9894 base=0.9894
+    K=40: alpha 최적화... α*=1.000  RMSE opt=0.9885 base=0.9885
+    K=50: alpha 최적화... α*=1.050  RMSE opt=0.9877 base=0.9877
+    K=60: alpha 최적화... α*=1.150  RMSE opt=0.9879 base=0.9880
+    K=70: alpha 최적화... α*=1.200  RMSE opt=0.9881 base=0.9884
+    K=80: alpha 최적화... α*=1.250  RMSE opt=0.9883 base=0.9887
+    K=90: alpha 최적화... α*=1.300  RMSE opt=0.9886 base=0.9891
+    K=100: alpha 최적화... α*=1.350  RMSE opt=0.9887 base=0.9895
+
+  [EUCLIDEAN]
+    K=10: alpha 최적화... α*=0.300  RMSE opt=1.0343 base=1.0375
+    K=20: alpha 최적화... α*=0.550  RMSE opt=1.0116 base=1.0129
+    K=30: alpha 최적화... α*=0.750  RMSE opt=1.0064 base=1.0069
+    K=40: alpha 최적화... α*=0.900  RMSE opt=1.0052 base=1.0052
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0050 base=1.0050
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0050 base=1.0050
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0058 base=1.0058
+    K=80: alpha 최적화... α*=1.050  RMSE opt=1.0059 base=1.0060
+    K=90: alpha 최적화... α*=1.100  RMSE opt=1.0065 base=1.0067
+    K=100: alpha 최적화... α*=1.150  RMSE opt=1.0070 base=1.0074
+
+  [IPWR]
+    K=10: alpha 최적화... α*=0.950  RMSE opt=0.9946 base=0.9947
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9779 base=0.9779
+    K=30: alpha 최적화... α*=1.000  RMSE opt=0.9737 base=0.9737
+    K=40: alpha 최적화... α*=1.100  RMSE opt=0.9735 base=0.9736
+    K=50: alpha 최적화... α*=1.200  RMSE opt=0.9737 base=0.9738
+    K=60: alpha 최적화... α*=1.300  RMSE opt=0.9735 base=0.9737
+    K=70: alpha 최적화... α*=1.350  RMSE opt=0.9738 base=0.9742
+    K=80: alpha 최적화... α*=1.400  RMSE opt=0.9738 base=0.9744
+    K=90: alpha 최적화... α*=1.450  RMSE opt=0.9739 base=0.9746
+    K=100: alpha 최적화... α*=1.450  RMSE opt=0.9741 base=0.9749
+
+  [ITR]
+    K=10: alpha 최적화... α*=0.000  RMSE opt=1.0631 base=1.0995
+    K=20: alpha 최적화... α*=0.000  RMSE opt=1.0406 base=1.0537
+    K=30: alpha 최적화... α*=0.200  RMSE opt=1.0349 base=1.0363
+    K=40: alpha 최적화... α*=0.650  RMSE opt=1.0264 base=1.0270
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0213 base=1.0213
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0193 base=1.0193
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0180 base=1.0180
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0169 base=1.0169
+    K=90: alpha 최적화... α*=1.000  RMSE opt=1.0166 base=1.0166
+    K=100: alpha 최적화... α*=1.000  RMSE opt=1.0165 base=1.0165
+
+  [JACCARD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0373 base=1.0373
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0209 base=1.0209
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0157 base=1.0157
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0142 base=1.0142
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0149 base=1.0149
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0152 base=1.0152
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0157 base=1.0157
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0158 base=1.0158
+    K=90: alpha 최적화... α*=1.000  RMSE opt=1.0161 base=1.0161
+    K=100: alpha 최적화... α*=1.150  RMSE opt=1.0164 base=1.0165
+
+  [JMSD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0224 base=1.0224
+    K=20: alpha 최적화... α*=1.150  RMSE opt=1.0097 base=1.0098
+    K=30: alpha 최적화... α*=1.300  RMSE opt=1.0064 base=1.0066
+    K=40: alpha 최적화... α*=1.500  RMSE opt=1.0062 base=1.0066
+    K=50: alpha 최적화... α*=1.650  RMSE opt=1.0072 base=1.0079
+    K=60: alpha 최적화... α*=1.750  RMSE opt=1.0080 base=1.0089
+    K=70: alpha 최적화... α*=1.850  RMSE opt=1.0086 base=1.0098
+    K=80: alpha 최적화... α*=1.900  RMSE opt=1.0093 base=1.0106
+    K=90: alpha 최적화... α*=2.000  RMSE opt=1.0097 base=1.0112
+    K=100: alpha 최적화... α*=2.100  RMSE opt=1.0100 base=1.0117
+
+  [KENDALL_TAU_B]
+    K=10: alpha 최적화... α*=0.200  RMSE opt=1.0389 base=1.0401
+    K=20: alpha 최적화... α*=0.400  RMSE opt=1.0177 base=1.0186
+    K=30: alpha 최적화... α*=0.400  RMSE opt=1.0093 base=1.0102
+    K=40: alpha 최적화... α*=0.450  RMSE opt=1.0064 base=1.0070
+    K=50: alpha 최적화... α*=0.500  RMSE opt=1.0059 base=1.0063
+    K=60: alpha 최적화... α*=0.550  RMSE opt=1.0066 base=1.0068
+    K=70: alpha 최적화... α*=0.600  RMSE opt=1.0065 base=1.0066
+    K=80: alpha 최적화... α*=0.600  RMSE opt=1.0065 base=1.0065
+    K=90: alpha 최적화... α*=0.600  RMSE opt=1.0065 base=1.0065
+    K=100: alpha 최적화... α*=0.650  RMSE opt=1.0065 base=1.0065
+
+  [MANHATTAN]
+    K=10: alpha 최적화... α*=0.100  RMSE opt=1.0440 base=1.0552
+    K=20: alpha 최적화... α*=0.250  RMSE opt=1.0220 base=1.0298
+    K=30: alpha 최적화... α*=0.350  RMSE opt=1.0159 base=1.0218
+    K=40: alpha 최적화... α*=0.400  RMSE opt=1.0135 base=1.0183
+    K=50: alpha 최적화... α*=0.450  RMSE opt=1.0121 base=1.0162
+    K=60: alpha 최적화... α*=0.500  RMSE opt=1.0126 base=1.0158
+    K=70: alpha 최적화... α*=0.550  RMSE opt=1.0128 base=1.0156
+    K=80: alpha 최적화... α*=0.550  RMSE opt=1.0130 base=1.0154
+    K=90: alpha 최적화... α*=0.600  RMSE opt=1.0132 base=1.0153
+    K=100: alpha 최적화... α*=0.600  RMSE opt=1.0135 base=1.0155
+
+  [MSD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=0.9880 base=0.9880
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9766 base=0.9766
+    K=30: alpha 최적화... α*=1.850  RMSE opt=0.9764 base=0.9772
+    K=40: alpha 최적화... α*=3.500  RMSE opt=0.9786 base=0.9813
+    K=50: alpha 최적화... α*=5.500  RMSE opt=0.9795 base=0.9845
+    K=60: alpha 최적화... α*=7.000  RMSE opt=0.9809 base=0.9879
+    K=70: alpha 최적화... α*=8.500  RMSE opt=0.9816 base=0.9907
+    K=80: alpha 최적화... α*=9.500  RMSE opt=0.9827 base=0.9934
+    K=90: alpha 최적화... α*=10.000  RMSE opt=0.9844 base=0.9965
+    K=100: alpha 최적화... α*=10.000  RMSE opt=0.9858 base=0.9986
+
+  [PCC]
+    K=10: alpha 최적화... α*=0.500  RMSE opt=1.0318 base=1.0336
+    K=20: alpha 최적화... α*=0.650  RMSE opt=1.0122 base=1.0131
+    K=30: alpha 최적화... α*=0.700  RMSE opt=1.0065 base=1.0073
+    K=40: alpha 최적화... α*=0.750  RMSE opt=1.0045 base=1.0050
+    K=50: alpha 최적화... α*=0.800  RMSE opt=1.0045 base=1.0048
+    K=60: alpha 최적화... α*=0.850  RMSE opt=1.0046 base=1.0048
+    K=70: alpha 최적화... α*=0.900  RMSE opt=1.0044 base=1.0046
+    K=80: alpha 최적화... α*=0.900  RMSE opt=1.0049 base=1.0050
+    K=90: alpha 최적화... α*=0.950  RMSE opt=1.0052 base=1.0052
+    K=100: alpha 최적화... α*=1.000  RMSE opt=1.0053 base=1.0053
+
+  [SPCC]
+    K=10: alpha 최적화... α*=0.600  RMSE opt=1.0290 base=1.0301
+    K=20: alpha 최적화... α*=0.800  RMSE opt=1.0106 base=1.0111
+    K=30: alpha 최적화... α*=0.850  RMSE opt=1.0052 base=1.0055
+    K=40: alpha 최적화... α*=0.900  RMSE opt=1.0039 base=1.0040
+    K=50: alpha 최적화... α*=0.950  RMSE opt=1.0037 base=1.0038
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0040 base=1.0040
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0040 base=1.0040
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0043 base=1.0043
+    K=90: alpha 최적화... α*=1.000  RMSE opt=1.0045 base=1.0045
+    K=100: alpha 최적화... α*=1.000  RMSE opt=1.0046 base=1.0046
+
+  [SRC]
+    K=10: alpha 최적화... α*=0.150  RMSE opt=1.0380 base=1.0391
+    K=20: alpha 최적화... α*=0.400  RMSE opt=1.0170 base=1.0177
+    K=30: alpha 최적화... α*=0.400  RMSE opt=1.0092 base=1.0099
+    K=40: alpha 최적화... α*=0.500  RMSE opt=1.0061 base=1.0066
+    K=50: alpha 최적화... α*=0.500  RMSE opt=1.0058 base=1.0061
+    K=60: alpha 최적화... α*=0.550  RMSE opt=1.0062 base=1.0063
+    K=70: alpha 최적화... α*=0.600  RMSE opt=1.0063 base=1.0062
+    K=80: alpha 최적화... α*=0.600  RMSE opt=1.0065 base=1.0064
+    K=90: alpha 최적화... α*=0.650  RMSE opt=1.0064 base=1.0063
+    K=100: alpha 최적화... α*=0.650  RMSE opt=1.0064 base=1.0063
+
+  [SAVED] [fold_06] /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/results/inner_sim/fold_06/grid_search_results_20260311_202254.csv
+  [SAVED] [fold_06] /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/results/inner_sim/fold_06/alpha_optimization_history_20260311_202254.csv
+  [TIME] [fold_06] elapsed: 382.3 min
+
+================================================================================
+  FOLD 07
+================================================================================
+  train_inner: (1682, 943)  validation: (1682, 943)
+  train_full : (1682, 943)   test      : (1682, 943)
+
+  [ACOS]
+    K=10: alpha 최적화... /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/main_experiment_v6_inner_sim.py:84: RuntimeWarning: Mean of empty slice
+  item_means  = np.nanmean(XX, axis=1)
+α*=6.500  RMSE opt=1.0474 base=1.0965
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0172 base=1.0484
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0114 base=1.0361
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0096 base=1.0315
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0080 base=1.0286
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0083 base=1.0277
+    K=70: alpha 최적화... α*=0.100  RMSE opt=1.0088 base=1.0273
+    K=80: alpha 최적화... α*=0.100  RMSE opt=1.0093 base=1.0272
+    K=90: alpha 최적화... α*=0.150  RMSE opt=1.0093 base=1.0269
+    K=100: alpha 최적화... α*=0.150  RMSE opt=1.0098 base=1.0270
+
+  [AMI]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0557 base=1.0754
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0346 base=1.0514
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0274 base=1.0439
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0237 base=1.0403
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0226 base=1.0387
+    K=60: alpha 최적화... α*=0.100  RMSE opt=1.0223 base=1.0378
+    K=70: alpha 최적화... α*=0.150  RMSE opt=1.0222 base=1.0372
+    K=80: alpha 최적화... α*=0.150  RMSE opt=1.0222 base=1.0370
+    K=90: alpha 최적화... α*=0.150  RMSE opt=1.0221 base=1.0368
+    K=100: alpha 최적화... α*=0.150  RMSE opt=1.0221 base=1.0367
+
+  [ARI]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0500 base=1.0738
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0292 base=1.0508
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0248 base=1.0441
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0218 base=1.0411
+    K=50: alpha 최적화... α*=0.100  RMSE opt=1.0207 base=1.0395
+    K=60: alpha 최적화... α*=0.100  RMSE opt=1.0198 base=1.0385
+    K=70: alpha 최적화... α*=0.150  RMSE opt=1.0198 base=1.0381
+    K=80: alpha 최적화... α*=0.150  RMSE opt=1.0198 base=1.0378
+    K=90: alpha 최적화... α*=0.150  RMSE opt=1.0198 base=1.0377
+    K=100: alpha 최적화... α*=0.150  RMSE opt=1.0197 base=1.0375
+
+  [CHEBYSHEV]
+    K=10: alpha 최적화... α*=0.500  RMSE opt=1.0197 base=1.0213
+    K=20: alpha 최적화... α*=0.950  RMSE opt=1.0045 base=1.0046
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0001 base=1.0001
+    K=40: alpha 최적화... α*=1.200  RMSE opt=1.0007 base=1.0009
+    K=50: alpha 최적화... α*=1.350  RMSE opt=1.0015 base=1.0020
+    K=60: alpha 최적화... α*=1.500  RMSE opt=1.0027 base=1.0037
+    K=70: alpha 최적화... α*=1.600  RMSE opt=1.0033 base=1.0048
+    K=80: alpha 최적화... α*=1.700  RMSE opt=1.0044 base=1.0063
+    K=90: alpha 최적화... α*=1.750  RMSE opt=1.0048 base=1.0070
+    K=100: alpha 최적화... α*=1.850  RMSE opt=1.0055 base=1.0081
+
+  [COSINE]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0206 base=1.0206
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0070 base=1.0070
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0058 base=1.0058
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0057 base=1.0057
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0074 base=1.0074
+    K=60: alpha 최적화... α*=1.150  RMSE opt=1.0080 base=1.0083
+    K=70: alpha 최적화... α*=1.300  RMSE opt=1.0084 base=1.0092
+    K=80: alpha 최적화... α*=1.450  RMSE opt=1.0085 base=1.0096
+    K=90: alpha 최적화... α*=1.550  RMSE opt=1.0089 base=1.0103
+    K=100: alpha 최적화... α*=1.650  RMSE opt=1.0092 base=1.0110
+
+  [CPCC]
+    K=10: alpha 최적화... α*=0.600  RMSE opt=1.0056 base=1.0063
+    K=20: alpha 최적화... α*=0.950  RMSE opt=0.9878 base=0.9878
+    K=30: alpha 최적화... α*=1.000  RMSE opt=0.9828 base=0.9828
+    K=40: alpha 최적화... α*=1.000  RMSE opt=0.9818 base=0.9818
+    K=50: alpha 최적화... α*=1.000  RMSE opt=0.9823 base=0.9823
+    K=60: alpha 최적화... α*=1.050  RMSE opt=0.9828 base=0.9828
+    K=70: alpha 최적화... α*=1.150  RMSE opt=0.9830 base=0.9833
+    K=80: alpha 최적화... α*=1.200  RMSE opt=0.9831 base=0.9835
+    K=90: alpha 최적화... α*=1.250  RMSE opt=0.9834 base=0.9840
+    K=100: alpha 최적화... α*=1.300  RMSE opt=0.9834 base=0.9841
+
+  [EUCLIDEAN]
+    K=10: alpha 최적화... α*=0.200  RMSE opt=1.0344 base=1.0387
+    K=20: alpha 최적화... α*=0.550  RMSE opt=1.0147 base=1.0164
+    K=30: alpha 최적화... α*=0.750  RMSE opt=1.0089 base=1.0096
+    K=40: alpha 최적화... α*=0.900  RMSE opt=1.0064 base=1.0067
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0063 base=1.0063
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0067 base=1.0067
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0069 base=1.0069
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0072 base=1.0072
+    K=90: alpha 최적화... α*=1.050  RMSE opt=1.0076 base=1.0077
+    K=100: alpha 최적화... α*=1.100  RMSE opt=1.0080 base=1.0081
+
+  [IPWR]
+    K=10: alpha 최적화... α*=0.900  RMSE opt=0.9873 base=0.9873
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9758 base=0.9758
+    K=30: alpha 최적화... α*=1.000  RMSE opt=0.9733 base=0.9733
+    K=40: alpha 최적화... α*=1.100  RMSE opt=0.9723 base=0.9724
+    K=50: alpha 최적화... α*=1.200  RMSE opt=0.9719 base=0.9722
+    K=60: alpha 최적화... α*=1.300  RMSE opt=0.9721 base=0.9727
+    K=70: alpha 최적화... α*=1.350  RMSE opt=0.9727 base=0.9735
+    K=80: alpha 최적화... α*=1.400  RMSE opt=0.9727 base=0.9738
+    K=90: alpha 최적화... α*=1.450  RMSE opt=0.9730 base=0.9743
+    K=100: alpha 최적화... α*=1.500  RMSE opt=0.9732 base=0.9748
+
+  [ITR]
+    K=10: alpha 최적화... α*=0.000  RMSE opt=1.0648 base=1.0915
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0470 base=1.0485
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0309 base=1.0322
+    K=40: alpha 최적화... α*=0.150  RMSE opt=1.0225 base=1.0235
+    K=50: alpha 최적화... α*=0.500  RMSE opt=1.0202 base=1.0207
+    K=60: alpha 최적화... α*=0.750  RMSE opt=1.0171 base=1.0173
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0154 base=1.0154
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0155 base=1.0155
+    K=90: alpha 최적화... α*=1.000  RMSE opt=1.0149 base=1.0149
+    K=100: alpha 최적화... α*=1.000  RMSE opt=1.0148 base=1.0148
+
+  [JACCARD]
+    K=10: alpha 최적화... α*=0.800  RMSE opt=1.0271 base=1.0270
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0155 base=1.0155
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0125 base=1.0125
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0117 base=1.0117
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0128 base=1.0128
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0127 base=1.0127
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0132 base=1.0132
+    K=80: alpha 최적화... α*=1.050  RMSE opt=1.0134 base=1.0135
+    K=90: alpha 최적화... α*=1.100  RMSE opt=1.0138 base=1.0140
+    K=100: alpha 최적화... α*=1.100  RMSE opt=1.0139 base=1.0141
+
+  [JMSD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0126 base=1.0126
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0035 base=1.0035
+    K=30: alpha 최적화... α*=1.100  RMSE opt=1.0030 base=1.0033
+    K=40: alpha 최적화... α*=1.350  RMSE opt=1.0027 base=1.0036
+    K=50: alpha 최적화... α*=1.450  RMSE opt=1.0045 base=1.0059
+    K=60: alpha 최적화... α*=1.550  RMSE opt=1.0047 base=1.0065
+    K=70: alpha 최적화... α*=1.700  RMSE opt=1.0049 base=1.0073
+    K=80: alpha 최적화... α*=1.800  RMSE opt=1.0051 base=1.0080
+    K=90: alpha 최적화... α*=1.850  RMSE opt=1.0057 base=1.0088
+    K=100: alpha 최적화... α*=1.900  RMSE opt=1.0061 base=1.0095
+
+  [KENDALL_TAU_B]
+    K=10: alpha 최적화... α*=0.150  RMSE opt=1.0364 base=1.0393
+    K=20: alpha 최적화... α*=0.250  RMSE opt=1.0160 base=1.0185
+    K=30: alpha 최적화... α*=0.350  RMSE opt=1.0097 base=1.0119
+    K=40: alpha 최적화... α*=0.350  RMSE opt=1.0074 base=1.0092
+    K=50: alpha 최적화... α*=0.400  RMSE opt=1.0067 base=1.0081
+    K=60: alpha 최적화... α*=0.450  RMSE opt=1.0064 base=1.0076
+    K=70: alpha 최적화... α*=0.450  RMSE opt=1.0061 base=1.0072
+    K=80: alpha 최적화... α*=0.500  RMSE opt=1.0061 base=1.0071
+    K=90: alpha 최적화... α*=0.550  RMSE opt=1.0064 base=1.0072
+    K=100: alpha 최적화... α*=0.550  RMSE opt=1.0068 base=1.0075
+
+  [MANHATTAN]
+    K=10: alpha 최적화... α*=0.100  RMSE opt=1.0465 base=1.0576
+    K=20: alpha 최적화... α*=0.250  RMSE opt=1.0233 base=1.0321
+    K=30: alpha 최적화... α*=0.350  RMSE opt=1.0178 base=1.0247
+    K=40: alpha 최적화... α*=0.400  RMSE opt=1.0139 base=1.0201
+    K=50: alpha 최적화... α*=0.450  RMSE opt=1.0141 base=1.0191
+    K=60: alpha 최적화... α*=0.450  RMSE opt=1.0134 base=1.0178
+    K=70: alpha 최적화... α*=0.500  RMSE opt=1.0138 base=1.0175
+    K=80: alpha 최적화... α*=0.550  RMSE opt=1.0141 base=1.0174
+    K=90: alpha 최적화... α*=0.550  RMSE opt=1.0143 base=1.0173
+    K=100: alpha 최적화... α*=0.600  RMSE opt=1.0146 base=1.0173
+
+  [MSD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=0.9857 base=0.9857
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9749 base=0.9749
+    K=30: alpha 최적화... α*=2.200  RMSE opt=0.9769 base=0.9779
+    K=40: alpha 최적화... α*=4.000  RMSE opt=0.9788 base=0.9818
+    K=50: alpha 최적화... α*=5.500  RMSE opt=0.9794 base=0.9842
+    K=60: alpha 최적화... α*=7.000  RMSE opt=0.9802 base=0.9870
+    K=70: alpha 최적화... α*=8.500  RMSE opt=0.9812 base=0.9900
+    K=80: alpha 최적화... α*=9.500  RMSE opt=0.9824 base=0.9929
+    K=90: alpha 최적화... α*=10.000  RMSE opt=0.9835 base=0.9953
+    K=100: alpha 최적화... α*=10.000  RMSE opt=0.9849 base=0.9976
+
+  [PCC]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0294 base=1.0312
+    K=20: alpha 최적화... α*=0.200  RMSE opt=1.0112 base=1.0126
+    K=30: alpha 최적화... α*=0.250  RMSE opt=1.0064 base=1.0075
+    K=40: alpha 최적화... α*=0.400  RMSE opt=1.0049 base=1.0058
+    K=50: alpha 최적화... α*=0.500  RMSE opt=1.0038 base=1.0046
+    K=60: alpha 최적화... α*=0.600  RMSE opt=1.0041 base=1.0046
+    K=70: alpha 최적화... α*=0.650  RMSE opt=1.0042 base=1.0046
+    K=80: alpha 최적화... α*=0.700  RMSE opt=1.0044 base=1.0047
+    K=90: alpha 최적화... α*=0.750  RMSE opt=1.0046 base=1.0048
+    K=100: alpha 최적화... α*=0.750  RMSE opt=1.0049 base=1.0050
+
+  [SPCC]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0274 base=1.0284
+    K=20: alpha 최적화... α*=0.300  RMSE opt=1.0090 base=1.0100
+    K=30: alpha 최적화... α*=0.350  RMSE opt=1.0057 base=1.0064
+    K=40: alpha 최적화... α*=0.500  RMSE opt=1.0039 base=1.0044
+    K=50: alpha 최적화... α*=0.600  RMSE opt=1.0031 base=1.0036
+    K=60: alpha 최적화... α*=0.700  RMSE opt=1.0033 base=1.0036
+    K=70: alpha 최적화... α*=0.800  RMSE opt=1.0035 base=1.0036
+    K=80: alpha 최적화... α*=0.800  RMSE opt=1.0040 base=1.0041
+    K=90: alpha 최적화... α*=0.850  RMSE opt=1.0041 base=1.0041
+    K=100: alpha 최적화... α*=0.900  RMSE opt=1.0043 base=1.0043
+
+  [SRC]
+    K=10: alpha 최적화... α*=0.200  RMSE opt=1.0364 base=1.0390
+    K=20: alpha 최적화... α*=0.250  RMSE opt=1.0148 base=1.0173
+    K=30: alpha 최적화... α*=0.350  RMSE opt=1.0088 base=1.0110
+    K=40: alpha 최적화... α*=0.350  RMSE opt=1.0077 base=1.0093
+    K=50: alpha 최적화... α*=0.400  RMSE opt=1.0062 base=1.0075
+    K=60: alpha 최적화... α*=0.450  RMSE opt=1.0060 base=1.0071
+    K=70: alpha 최적화... α*=0.500  RMSE opt=1.0059 base=1.0068
+    K=80: alpha 최적화... α*=0.550  RMSE opt=1.0059 base=1.0068
+    K=90: alpha 최적화... α*=0.600  RMSE opt=1.0061 base=1.0069
+    K=100: alpha 최적화... α*=0.600  RMSE opt=1.0066 base=1.0072
+
+  [SAVED] [fold_07] /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/results/inner_sim/fold_07/grid_search_results_20260312_024741.csv
+  [SAVED] [fold_07] /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/results/inner_sim/fold_07/alpha_optimization_history_20260312_024741.csv
+  [TIME] [fold_07] elapsed: 384.8 min
+
+================================================================================
+  FOLD 08
+================================================================================
+  train_inner: (1682, 943)  validation: (1682, 943)
+  train_full : (1682, 943)   test      : (1682, 943)
+
+  [ACOS]
+    K=10: alpha 최적화... /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/main_experiment_v6_inner_sim.py:84: RuntimeWarning: Mean of empty slice
+  item_means  = np.nanmean(XX, axis=1)
+α*=6.500  RMSE opt=1.0562 base=1.1125
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0353 base=1.0659
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0297 base=1.0539
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0283 base=1.0491
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0277 base=1.0467
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0277 base=1.0455
+    K=70: alpha 최적화... α*=0.050  RMSE opt=1.0280 base=1.0449
+    K=80: alpha 최적화... α*=0.050  RMSE opt=1.0285 base=1.0447
+    K=90: alpha 최적화... α*=0.100  RMSE opt=1.0287 base=1.0445
+    K=100: alpha 최적화... α*=0.100  RMSE opt=1.0287 base=1.0443
+
+  [AMI]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0782 base=1.0982
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0546 base=1.0742
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0474 base=1.0663
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0438 base=1.0624
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0422 base=1.0608
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0411 base=1.0596
+    K=70: alpha 최적화... α*=0.050  RMSE opt=1.0405 base=1.0590
+    K=80: alpha 최적화... α*=0.050  RMSE opt=1.0401 base=1.0586
+    K=90: alpha 최적화... α*=0.050  RMSE opt=1.0398 base=1.0583
+    K=100: alpha 최적화... α*=0.050  RMSE opt=1.0392 base=1.0580
+
+  [ARI]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0763 base=1.1002
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0497 base=1.0738
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0426 base=1.0661
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0397 base=1.0625
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0386 base=1.0610
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0381 base=1.0601
+    K=70: alpha 최적화... α*=0.050  RMSE opt=1.0374 base=1.0595
+    K=80: alpha 최적화... α*=0.050  RMSE opt=1.0374 base=1.0593
+    K=90: alpha 최적화... α*=0.050  RMSE opt=1.0372 base=1.0590
+    K=100: alpha 최적화... α*=0.100  RMSE opt=1.0373 base=1.0589
+
+  [CHEBYSHEV]
+    K=10: alpha 최적화... α*=0.550  RMSE opt=1.0387 base=1.0394
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0201 base=1.0201
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0182 base=1.0182
+    K=40: alpha 최적화... α*=1.250  RMSE opt=1.0175 base=1.0179
+    K=50: alpha 최적화... α*=1.400  RMSE opt=1.0175 base=1.0182
+    K=60: alpha 최적화... α*=1.550  RMSE opt=1.0185 base=1.0197
+    K=70: alpha 최적화... α*=1.650  RMSE opt=1.0197 base=1.0215
+    K=80: alpha 최적화... α*=1.750  RMSE opt=1.0206 base=1.0228
+    K=90: alpha 최적화... α*=1.800  RMSE opt=1.0214 base=1.0239
+    K=100: alpha 최적화... α*=1.850  RMSE opt=1.0219 base=1.0247
+
+  [COSINE]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0411 base=1.0411
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0258 base=1.0258
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0240 base=1.0240
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0240 base=1.0240
+    K=50: alpha 최적화... α*=1.100  RMSE opt=1.0241 base=1.0244
+    K=60: alpha 최적화... α*=1.300  RMSE opt=1.0245 base=1.0251
+    K=70: alpha 최적화... α*=1.400  RMSE opt=1.0253 base=1.0264
+    K=80: alpha 최적화... α*=1.550  RMSE opt=1.0256 base=1.0272
+    K=90: alpha 최적화... α*=1.700  RMSE opt=1.0257 base=1.0278
+    K=100: alpha 최적화... α*=1.800  RMSE opt=1.0260 base=1.0284
+
+  [CPCC]
+    K=10: alpha 최적화... α*=0.600  RMSE opt=1.0269 base=1.0275
+    K=20: alpha 최적화... α*=0.950  RMSE opt=1.0071 base=1.0072
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0036 base=1.0036
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0008 base=1.0008
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0007 base=1.0007
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0007 base=1.0007
+    K=70: alpha 최적화... α*=1.050  RMSE opt=1.0006 base=1.0007
+    K=80: alpha 최적화... α*=1.100  RMSE opt=1.0008 base=1.0009
+    K=90: alpha 최적화... α*=1.150  RMSE opt=1.0009 base=1.0011
+    K=100: alpha 최적화... α*=1.200  RMSE opt=1.0012 base=1.0015
+
+  [EUCLIDEAN]
+    K=10: alpha 최적화... α*=0.300  RMSE opt=1.0542 base=1.0569
+    K=20: alpha 최적화... α*=0.500  RMSE opt=1.0303 base=1.0319
+    K=30: alpha 최적화... α*=0.650  RMSE opt=1.0242 base=1.0250
+    K=40: alpha 최적화... α*=0.850  RMSE opt=1.0240 base=1.0242
+    K=50: alpha 최적화... α*=0.950  RMSE opt=1.0242 base=1.0243
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0241 base=1.0241
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0240 base=1.0240
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0241 base=1.0241
+    K=90: alpha 최적화... α*=1.050  RMSE opt=1.0246 base=1.0246
+    K=100: alpha 최적화... α*=1.100  RMSE opt=1.0252 base=1.0254
+
+  [IPWR]
+    K=10: alpha 최적화... α*=0.850  RMSE opt=1.0038 base=1.0038
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9915 base=0.9915
+    K=30: alpha 최적화... α*=1.000  RMSE opt=0.9881 base=0.9881
+    K=40: alpha 최적화... α*=1.000  RMSE opt=0.9869 base=0.9869
+    K=50: alpha 최적화... α*=1.100  RMSE opt=0.9867 base=0.9869
+    K=60: alpha 최적화... α*=1.200  RMSE opt=0.9864 base=0.9870
+    K=70: alpha 최적화... α*=1.300  RMSE opt=0.9867 base=0.9877
+    K=80: alpha 최적화... α*=1.350  RMSE opt=0.9871 base=0.9885
+    K=90: alpha 최적화... α*=1.400  RMSE opt=0.9872 base=0.9887
+    K=100: alpha 최적화... α*=1.400  RMSE opt=0.9873 base=0.9890
+
+  [ITR]
+    K=10: alpha 최적화... α*=0.000  RMSE opt=1.0791 base=1.1072
+    K=20: alpha 최적화... α*=0.000  RMSE opt=1.0608 base=1.0644
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0479 base=1.0493
+    K=40: alpha 최적화... α*=0.300  RMSE opt=1.0412 base=1.0421
+    K=50: alpha 최적화... α*=0.650  RMSE opt=1.0367 base=1.0371
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0353 base=1.0353
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0340 base=1.0340
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0326 base=1.0326
+    K=90: alpha 최적화... α*=1.000  RMSE opt=1.0327 base=1.0327
+    K=100: alpha 최적화... α*=1.000  RMSE opt=1.0325 base=1.0325
+
+  [JACCARD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0483 base=1.0483
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0326 base=1.0326
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0285 base=1.0285
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0288 base=1.0288
+    K=50: alpha 최적화... α*=1.050  RMSE opt=1.0281 base=1.0282
+    K=60: alpha 최적화... α*=1.150  RMSE opt=1.0285 base=1.0288
+    K=70: alpha 최적화... α*=1.250  RMSE opt=1.0293 base=1.0298
+    K=80: alpha 최적화... α*=1.300  RMSE opt=1.0294 base=1.0301
+    K=90: alpha 최적화... α*=1.350  RMSE opt=1.0295 base=1.0303
+    K=100: alpha 최적화... α*=1.450  RMSE opt=1.0297 base=1.0307
+
+  [JMSD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0345 base=1.0345
+    K=20: alpha 최적화... α*=1.300  RMSE opt=1.0207 base=1.0211
+    K=30: alpha 최적화... α*=1.500  RMSE opt=1.0193 base=1.0202
+    K=40: alpha 최적화... α*=1.650  RMSE opt=1.0194 base=1.0207
+    K=50: alpha 최적화... α*=1.800  RMSE opt=1.0196 base=1.0214
+    K=60: alpha 최적화... α*=1.950  RMSE opt=1.0201 base=1.0223
+    K=70: alpha 최적화... α*=2.050  RMSE opt=1.0209 base=1.0239
+    K=80: alpha 최적화... α*=2.150  RMSE opt=1.0213 base=1.0247
+    K=90: alpha 최적화... α*=2.200  RMSE opt=1.0215 base=1.0251
+    K=100: alpha 최적화... α*=2.250  RMSE opt=1.0220 base=1.0261
+
+  [KENDALL_TAU_B]
+    K=10: alpha 최적화... α*=0.250  RMSE opt=1.0610 base=1.0639
+    K=20: alpha 최적화... α*=0.350  RMSE opt=1.0376 base=1.0401
+    K=30: alpha 최적화... α*=0.400  RMSE opt=1.0318 base=1.0337
+    K=40: alpha 최적화... α*=0.450  RMSE opt=1.0302 base=1.0316
+    K=50: alpha 최적화... α*=0.500  RMSE opt=1.0291 base=1.0304
+    K=60: alpha 최적화... α*=0.550  RMSE opt=1.0283 base=1.0296
+    K=70: alpha 최적화... α*=0.550  RMSE opt=1.0277 base=1.0289
+    K=80: alpha 최적화... α*=0.600  RMSE opt=1.0274 base=1.0286
+    K=90: alpha 최적화... α*=0.600  RMSE opt=1.0275 base=1.0286
+    K=100: alpha 최적화... α*=0.650  RMSE opt=1.0275 base=1.0285
+
+  [MANHATTAN]
+    K=10: alpha 최적화... α*=0.100  RMSE opt=1.0638 base=1.0753
+    K=20: alpha 최적화... α*=0.200  RMSE opt=1.0403 base=1.0494
+    K=30: alpha 최적화... α*=0.300  RMSE opt=1.0343 base=1.0414
+    K=40: alpha 최적화... α*=0.350  RMSE opt=1.0329 base=1.0384
+    K=50: alpha 최적화... α*=0.400  RMSE opt=1.0321 base=1.0367
+    K=60: alpha 최적화... α*=0.450  RMSE opt=1.0314 base=1.0354
+    K=70: alpha 최적화... α*=0.500  RMSE opt=1.0313 base=1.0349
+    K=80: alpha 최적화... α*=0.550  RMSE opt=1.0316 base=1.0347
+    K=90: alpha 최적화... α*=0.550  RMSE opt=1.0315 base=1.0344
+    K=100: alpha 최적화... α*=0.550  RMSE opt=1.0315 base=1.0342
+
+  [MSD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0054 base=1.0054
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9934 base=0.9934
+    K=30: alpha 최적화... α*=2.500  RMSE opt=0.9937 base=0.9951
+    K=40: alpha 최적화... α*=4.500  RMSE opt=0.9948 base=0.9985
+    K=50: alpha 최적화... α*=6.000  RMSE opt=0.9960 base=1.0018
+    K=60: alpha 최적화... α*=7.500  RMSE opt=0.9974 base=1.0054
+    K=70: alpha 최적화... α*=9.000  RMSE opt=0.9982 base=1.0082
+    K=80: alpha 최적화... α*=10.000  RMSE opt=0.9994 base=1.0114
+    K=90: alpha 최적화... α*=10.000  RMSE opt=1.0012 base=1.0142
+    K=100: alpha 최적화... α*=10.000  RMSE opt=1.0025 base=1.0163
+
+  [PCC]
+    K=10: alpha 최적화... α*=0.450  RMSE opt=1.0481 base=1.0507
+    K=20: alpha 최적화... α*=0.550  RMSE opt=1.0297 base=1.0314
+    K=30: alpha 최적화... α*=0.600  RMSE opt=1.0250 base=1.0262
+    K=40: alpha 최적화... α*=0.700  RMSE opt=1.0237 base=1.0246
+    K=50: alpha 최적화... α*=0.750  RMSE opt=1.0228 base=1.0236
+    K=60: alpha 최적화... α*=0.750  RMSE opt=1.0223 base=1.0230
+    K=70: alpha 최적화... α*=0.750  RMSE opt=1.0225 base=1.0231
+    K=80: alpha 최적화... α*=0.800  RMSE opt=1.0227 base=1.0231
+    K=90: alpha 최적화... α*=0.850  RMSE opt=1.0227 base=1.0231
+    K=100: alpha 최적화... α*=0.850  RMSE opt=1.0230 base=1.0234
+
+  [SPCC]
+    K=10: alpha 최적화... α*=0.600  RMSE opt=1.0472 base=1.0488
+    K=20: alpha 최적화... α*=0.650  RMSE opt=1.0279 base=1.0290
+    K=30: alpha 최적화... α*=0.700  RMSE opt=1.0239 base=1.0246
+    K=40: alpha 최적화... α*=0.750  RMSE opt=1.0231 base=1.0236
+    K=50: alpha 최적화... α*=0.800  RMSE opt=1.0222 base=1.0226
+    K=60: alpha 최적화... α*=0.850  RMSE opt=1.0218 base=1.0221
+    K=70: alpha 최적화... α*=0.850  RMSE opt=1.0220 base=1.0223
+    K=80: alpha 최적화... α*=0.900  RMSE opt=1.0224 base=1.0225
+    K=90: alpha 최적화... α*=0.950  RMSE opt=1.0223 base=1.0224
+    K=100: alpha 최적화... α*=0.950  RMSE opt=1.0227 base=1.0228
+
+  [SRC]
+    K=10: alpha 최적화... α*=0.300  RMSE opt=1.0605 base=1.0631
+    K=20: alpha 최적화... α*=0.400  RMSE opt=1.0375 base=1.0396
+    K=30: alpha 최적화... α*=0.400  RMSE opt=1.0314 base=1.0331
+    K=40: alpha 최적화... α*=0.450  RMSE opt=1.0299 base=1.0312
+    K=50: alpha 최적화... α*=0.500  RMSE opt=1.0288 base=1.0300
+    K=60: alpha 최적화... α*=0.550  RMSE opt=1.0285 base=1.0295
+    K=70: alpha 최적화... α*=0.600  RMSE opt=1.0278 base=1.0287
+    K=80: alpha 최적화... α*=0.650  RMSE opt=1.0275 base=1.0284
+    K=90: alpha 최적화... α*=0.650  RMSE opt=1.0276 base=1.0284
+    K=100: alpha 최적화... α*=0.700  RMSE opt=1.0277 base=1.0284
+
+  [SAVED] [fold_08] /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/results/inner_sim/fold_08/grid_search_results_20260312_090735.csv
+  [SAVED] [fold_08] /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/results/inner_sim/fold_08/alpha_optimization_history_20260312_090735.csv
+  [TIME] [fold_08] elapsed: 379.9 min
+
+================================================================================
+  FOLD 09
+================================================================================
+  train_inner: (1682, 943)  validation: (1682, 943)
+  train_full : (1682, 943)   test      : (1682, 943)
+
+  [ACOS]
+    K=10: alpha 최적화... /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/main_experiment_v6_inner_sim.py:84: RuntimeWarning: Mean of empty slice
+  item_means  = np.nanmean(XX, axis=1)
+α*=7.000  RMSE opt=1.0437 base=1.0992
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0181 base=1.0509
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0106 base=1.0368
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0081 base=1.0311
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0068 base=1.0281
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0069 base=1.0267
+    K=70: alpha 최적화... α*=0.050  RMSE opt=1.0072 base=1.0260
+    K=80: alpha 최적화... α*=0.100  RMSE opt=1.0072 base=1.0255
+    K=90: alpha 최적화... α*=0.100  RMSE opt=1.0077 base=1.0254
+    K=100: alpha 최적화... α*=0.100  RMSE opt=1.0082 base=1.0253
+
+  [AMI]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0555 base=1.0783
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0326 base=1.0525
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0284 base=1.0466
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0246 base=1.0430
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0232 base=1.0414
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0220 base=1.0403
+    K=70: alpha 최적화... α*=0.050  RMSE opt=1.0203 base=1.0393
+    K=80: alpha 최적화... α*=0.000  RMSE opt=1.0217 base=1.0390
+    K=90: alpha 최적화... α*=0.000  RMSE opt=1.0209 base=1.0387
+    K=100: alpha 최적화... α*=0.000  RMSE opt=1.0207 base=1.0386
+
+  [ARI]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0514 base=1.0779
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0290 base=1.0533
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0222 base=1.0458
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0184 base=1.0420
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0175 base=1.0404
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0169 base=1.0397
+    K=70: alpha 최적화... α*=0.050  RMSE opt=1.0169 base=1.0392
+    K=80: alpha 최적화... α*=0.050  RMSE opt=1.0166 base=1.0389
+    K=90: alpha 최적화... α*=0.050  RMSE opt=1.0166 base=1.0387
+    K=100: alpha 최적화... α*=0.050  RMSE opt=1.0165 base=1.0385
+
+  [CHEBYSHEV]
+    K=10: alpha 최적화... α*=0.600  RMSE opt=1.0197 base=1.0206
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0019 base=1.0019
+    K=30: alpha 최적화... α*=1.100  RMSE opt=0.9982 base=0.9982
+    K=40: alpha 최적화... α*=1.350  RMSE opt=0.9973 base=0.9976
+    K=50: alpha 최적화... α*=1.450  RMSE opt=0.9982 base=0.9988
+    K=60: alpha 최적화... α*=1.650  RMSE opt=0.9986 base=0.9997
+    K=70: alpha 최적화... α*=1.750  RMSE opt=0.9995 base=1.0012
+    K=80: alpha 최적화... α*=1.850  RMSE opt=0.9999 base=1.0019
+    K=90: alpha 최적화... α*=1.900  RMSE opt=1.0003 base=1.0025
+    K=100: alpha 최적화... α*=1.950  RMSE opt=1.0010 base=1.0037
+
+  [COSINE]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0205 base=1.0205
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0060 base=1.0060
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0018 base=1.0018
+    K=40: alpha 최적화... α*=1.050  RMSE opt=1.0033 base=1.0034
+    K=50: alpha 최적화... α*=1.200  RMSE opt=1.0035 base=1.0039
+    K=60: alpha 최적화... α*=1.400  RMSE opt=1.0043 base=1.0051
+    K=70: alpha 최적화... α*=1.500  RMSE opt=1.0047 base=1.0057
+    K=80: alpha 최적화... α*=1.700  RMSE opt=1.0050 base=1.0065
+    K=90: alpha 최적화... α*=1.750  RMSE opt=1.0055 base=1.0073
+    K=100: alpha 최적화... α*=1.850  RMSE opt=1.0057 base=1.0078
+
+  [CPCC]
+    K=10: alpha 최적화... α*=0.350  RMSE opt=1.0021 base=1.0035
+    K=20: alpha 최적화... α*=0.800  RMSE opt=0.9828 base=0.9833
+    K=30: alpha 최적화... α*=0.950  RMSE opt=0.9790 base=0.9791
+    K=40: alpha 최적화... α*=1.000  RMSE opt=0.9773 base=0.9773
+    K=50: alpha 최적화... α*=1.000  RMSE opt=0.9769 base=0.9769
+    K=60: alpha 최적화... α*=1.000  RMSE opt=0.9773 base=0.9773
+    K=70: alpha 최적화... α*=1.000  RMSE opt=0.9777 base=0.9777
+    K=80: alpha 최적화... α*=1.050  RMSE opt=0.9783 base=0.9784
+    K=90: alpha 최적화... α*=1.100  RMSE opt=0.9789 base=0.9791
+    K=100: alpha 최적화... α*=1.150  RMSE opt=0.9795 base=0.9798
+
+  [EUCLIDEAN]
+    K=10: alpha 최적화... α*=0.400  RMSE opt=1.0318 base=1.0357
+    K=20: alpha 최적화... α*=0.600  RMSE opt=1.0100 base=1.0120
+    K=30: alpha 최적화... α*=0.800  RMSE opt=1.0036 base=1.0045
+    K=40: alpha 최적화... α*=0.950  RMSE opt=1.0028 base=1.0029
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0024 base=1.0024
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0022 base=1.0022
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0025 base=1.0025
+    K=80: alpha 최적화... α*=1.050  RMSE opt=1.0030 base=1.0030
+    K=90: alpha 최적화... α*=1.100  RMSE opt=1.0037 base=1.0037
+    K=100: alpha 최적화... α*=1.150  RMSE opt=1.0046 base=1.0047
+
+  [IPWR]
+    K=10: alpha 최적화... α*=0.750  RMSE opt=0.9804 base=0.9801
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9651 base=0.9651
+    K=30: alpha 최적화... α*=1.000  RMSE opt=0.9639 base=0.9639
+    K=40: alpha 최적화... α*=1.050  RMSE opt=0.9639 base=0.9642
+    K=50: alpha 최적화... α*=1.150  RMSE opt=0.9639 base=0.9647
+    K=60: alpha 최적화... α*=1.250  RMSE opt=0.9637 base=0.9650
+    K=70: alpha 최적화... α*=1.300  RMSE opt=0.9639 base=0.9656
+    K=80: alpha 최적화... α*=1.350  RMSE opt=0.9641 base=0.9661
+    K=90: alpha 최적화... α*=1.400  RMSE opt=0.9640 base=0.9664
+    K=100: alpha 최적화... α*=1.450  RMSE opt=0.9639 base=0.9666
+
+  [ITR]
+    K=10: alpha 최적화... α*=0.000  RMSE opt=1.0605 base=1.0828
+    K=20: alpha 최적화... α*=0.000  RMSE opt=1.0352 base=1.0408
+    K=30: alpha 최적화... α*=0.150  RMSE opt=1.0245 base=1.0256
+    K=40: alpha 최적화... α*=0.500  RMSE opt=1.0182 base=1.0187
+    K=50: alpha 최적화... α*=0.900  RMSE opt=1.0147 base=1.0148
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0128 base=1.0128
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0121 base=1.0121
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0116 base=1.0116
+    K=90: alpha 최적화... α*=1.000  RMSE opt=1.0110 base=1.0110
+    K=100: alpha 최적화... α*=1.000  RMSE opt=1.0115 base=1.0115
+
+  [JACCARD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0256 base=1.0256
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0103 base=1.0103
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0089 base=1.0089
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0081 base=1.0081
+    K=50: alpha 최적화... α*=1.050  RMSE opt=1.0079 base=1.0080
+    K=60: alpha 최적화... α*=1.100  RMSE opt=1.0081 base=1.0083
+    K=70: alpha 최적화... α*=1.200  RMSE opt=1.0087 base=1.0091
+    K=80: alpha 최적화... α*=1.250  RMSE opt=1.0093 base=1.0099
+    K=90: alpha 최적화... α*=1.300  RMSE opt=1.0098 base=1.0106
+    K=100: alpha 최적화... α*=1.350  RMSE opt=1.0099 base=1.0108
+
+  [JMSD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0089 base=1.0089
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9988 base=0.9988
+    K=30: alpha 최적화... α*=1.350  RMSE opt=0.9982 base=0.9991
+    K=40: alpha 최적화... α*=1.550  RMSE opt=0.9983 base=0.9998
+    K=50: alpha 최적화... α*=1.700  RMSE opt=0.9992 base=1.0013
+    K=60: alpha 최적화... α*=1.800  RMSE opt=0.9997 base=1.0022
+    K=70: alpha 최적화... α*=1.900  RMSE opt=1.0004 base=1.0035
+    K=80: alpha 최적화... α*=2.000  RMSE opt=1.0010 base=1.0046
+    K=90: alpha 최적화... α*=2.100  RMSE opt=1.0013 base=1.0053
+    K=100: alpha 최적화... α*=2.150  RMSE opt=1.0016 base=1.0060
+
+  [KENDALL_TAU_B]
+    K=10: alpha 최적화... α*=0.100  RMSE opt=1.0319 base=1.0364
+    K=20: alpha 최적화... α*=0.100  RMSE opt=1.0119 base=1.0151
+    K=30: alpha 최적화... α*=0.150  RMSE opt=1.0057 base=1.0082
+    K=40: alpha 최적화... α*=0.200  RMSE opt=1.0034 base=1.0053
+    K=50: alpha 최적화... α*=0.200  RMSE opt=1.0027 base=1.0043
+    K=60: alpha 최적화... α*=0.300  RMSE opt=1.0029 base=1.0042
+    K=70: alpha 최적화... α*=0.300  RMSE opt=1.0032 base=1.0042
+    K=80: alpha 최적화... α*=0.350  RMSE opt=1.0034 base=1.0042
+    K=90: alpha 최적화... α*=0.400  RMSE opt=1.0040 base=1.0045
+    K=100: alpha 최적화... α*=0.450  RMSE opt=1.0043 base=1.0047
+
+  [MANHATTAN]
+    K=10: alpha 최적화... α*=0.200  RMSE opt=1.0433 base=1.0566
+    K=20: alpha 최적화... α*=0.300  RMSE opt=1.0188 base=1.0297
+    K=30: alpha 최적화... α*=0.350  RMSE opt=1.0125 base=1.0212
+    K=40: alpha 최적화... α*=0.400  RMSE opt=1.0111 base=1.0183
+    K=50: alpha 최적화... α*=0.450  RMSE opt=1.0099 base=1.0161
+    K=60: alpha 최적화... α*=0.500  RMSE opt=1.0102 base=1.0155
+    K=70: alpha 최적화... α*=0.550  RMSE opt=1.0103 base=1.0150
+    K=80: alpha 최적화... α*=0.600  RMSE opt=1.0106 base=1.0147
+    K=90: alpha 최적화... α*=0.600  RMSE opt=1.0107 base=1.0145
+    K=100: alpha 최적화... α*=0.600  RMSE opt=1.0109 base=1.0145
+
+  [MSD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=0.9861 base=0.9861
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9729 base=0.9729
+    K=30: alpha 최적화... α*=1.000  RMSE opt=0.9741 base=0.9741
+    K=40: alpha 최적화... α*=2.600  RMSE opt=0.9748 base=0.9766
+    K=50: alpha 최적화... α*=4.000  RMSE opt=0.9761 base=0.9797
+    K=60: alpha 최적화... α*=5.500  RMSE opt=0.9776 base=0.9833
+    K=70: alpha 최적화... α*=7.000  RMSE opt=0.9788 base=0.9868
+    K=80: alpha 최적화... α*=8.000  RMSE opt=0.9804 base=0.9903
+    K=90: alpha 최적화... α*=9.000  RMSE opt=0.9813 base=0.9931
+    K=100: alpha 최적화... α*=10.000  RMSE opt=0.9819 base=0.9954
+
+  [PCC]
+    K=10: alpha 최적화... α*=0.200  RMSE opt=1.0269 base=1.0293
+    K=20: alpha 최적화... α*=0.300  RMSE opt=1.0060 base=1.0079
+    K=30: alpha 최적화... α*=0.350  RMSE opt=1.0008 base=1.0024
+    K=40: alpha 최적화... α*=0.350  RMSE opt=0.9997 base=1.0007
+    K=50: alpha 최적화... α*=0.450  RMSE opt=0.9996 base=1.0004
+    K=60: alpha 최적화... α*=0.500  RMSE opt=1.0002 base=1.0006
+    K=70: alpha 최적화... α*=0.550  RMSE opt=1.0007 base=1.0009
+    K=80: alpha 최적화... α*=0.600  RMSE opt=1.0011 base=1.0012
+    K=90: alpha 최적화... α*=0.650  RMSE opt=1.0013 base=1.0014
+    K=100: alpha 최적화... α*=0.650  RMSE opt=1.0018 base=1.0018
+
+  [SPCC]
+    K=10: alpha 최적화... α*=0.300  RMSE opt=1.0232 base=1.0250
+    K=20: alpha 최적화... α*=0.350  RMSE opt=1.0048 base=1.0061
+    K=30: alpha 최적화... α*=0.400  RMSE opt=0.9998 base=1.0008
+    K=40: alpha 최적화... α*=0.450  RMSE opt=0.9990 base=0.9996
+    K=50: alpha 최적화... α*=0.500  RMSE opt=0.9993 base=0.9996
+    K=60: alpha 최적화... α*=0.600  RMSE opt=0.9995 base=0.9996
+    K=70: alpha 최적화... α*=0.650  RMSE opt=1.0002 base=1.0002
+    K=80: alpha 최적화... α*=0.700  RMSE opt=1.0005 base=1.0005
+    K=90: alpha 최적화... α*=0.750  RMSE opt=1.0007 base=1.0007
+    K=100: alpha 최적화... α*=0.750  RMSE opt=1.0012 base=1.0012
+
+  [SRC]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0339 base=1.0374
+    K=20: alpha 최적화... α*=0.100  RMSE opt=1.0116 base=1.0142
+    K=30: alpha 최적화... α*=0.150  RMSE opt=1.0056 base=1.0076
+    K=40: alpha 최적화... α*=0.200  RMSE opt=1.0030 base=1.0046
+    K=50: alpha 최적화... α*=0.250  RMSE opt=1.0026 base=1.0038
+    K=60: alpha 최적화... α*=0.300  RMSE opt=1.0030 base=1.0038
+    K=70: alpha 최적화... α*=0.350  RMSE opt=1.0031 base=1.0037
+    K=80: alpha 최적화... α*=0.400  RMSE opt=1.0036 base=1.0040
+    K=90: alpha 최적화... α*=0.400  RMSE opt=1.0040 base=1.0041
+    K=100: alpha 최적화... α*=0.450  RMSE opt=1.0042 base=1.0043
+
+  [SAVED] [fold_09] /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/results/inner_sim/fold_09/grid_search_results_20260312_153137.csv
+  [SAVED] [fold_09] /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/results/inner_sim/fold_09/alpha_optimization_history_20260312_153137.csv
+  [TIME] [fold_09] elapsed: 384.0 min
+
+================================================================================
+  FOLD 10
+================================================================================
+  train_inner: (1682, 943)  validation: (1682, 943)
+  train_full : (1682, 943)   test      : (1682, 943)
+
+  [ACOS]
+    K=10: alpha 최적화... /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/main_experiment_v6_inner_sim.py:84: RuntimeWarning: Mean of empty slice
+  item_means  = np.nanmean(XX, axis=1)
+α*=7.000  RMSE opt=1.0479 base=1.1010
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0191 base=1.0548
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0134 base=1.0420
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0109 base=1.0365
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0107 base=1.0342
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0109 base=1.0331
+    K=70: alpha 최적화... α*=0.100  RMSE opt=1.0113 base=1.0325
+    K=80: alpha 최적화... α*=0.100  RMSE opt=1.0111 base=1.0320
+    K=90: alpha 최적화... α*=0.100  RMSE opt=1.0120 base=1.0321
+    K=100: alpha 최적화... α*=0.100  RMSE opt=1.0128 base=1.0323
+
+  [AMI]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0592 base=1.0776
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0349 base=1.0517
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0262 base=1.0433
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0233 base=1.0399
+    K=50: alpha 최적화... α*=0.050  RMSE opt=1.0216 base=1.0379
+    K=60: alpha 최적화... α*=0.050  RMSE opt=1.0204 base=1.0367
+    K=70: alpha 최적화... α*=0.100  RMSE opt=1.0201 base=1.0361
+    K=80: alpha 최적화... α*=0.100  RMSE opt=1.0200 base=1.0358
+    K=90: alpha 최적화... α*=0.000  RMSE opt=1.0259 base=1.0356
+    K=100: alpha 최적화... α*=0.000  RMSE opt=1.0251 base=1.0355
+
+  [ARI]
+    K=10: alpha 최적화... α*=0.050  RMSE opt=1.0577 base=1.0784
+    K=20: alpha 최적화... α*=0.050  RMSE opt=1.0327 base=1.0528
+    K=30: alpha 최적화... α*=0.050  RMSE opt=1.0250 base=1.0450
+    K=40: alpha 최적화... α*=0.050  RMSE opt=1.0226 base=1.0417
+    K=50: alpha 최적화... α*=0.100  RMSE opt=1.0219 base=1.0401
+    K=60: alpha 최적화... α*=0.100  RMSE opt=1.0206 base=1.0390
+    K=70: alpha 최적화... α*=0.100  RMSE opt=1.0205 base=1.0386
+    K=80: alpha 최적화... α*=0.100  RMSE opt=1.0207 base=1.0384
+    K=90: alpha 최적화... α*=0.100  RMSE opt=1.0208 base=1.0382
+    K=100: alpha 최적화... α*=0.100  RMSE opt=1.0209 base=1.0381
+
+  [CHEBYSHEV]
+    K=10: alpha 최적화... α*=0.600  RMSE opt=1.0166 base=1.0181
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0042 base=1.0042
+    K=30: alpha 최적화... α*=1.150  RMSE opt=1.0040 base=1.0041
+    K=40: alpha 최적화... α*=1.400  RMSE opt=1.0030 base=1.0035
+    K=50: alpha 최적화... α*=1.550  RMSE opt=1.0035 base=1.0043
+    K=60: alpha 최적화... α*=1.700  RMSE opt=1.0042 base=1.0055
+    K=70: alpha 최적화... α*=1.800  RMSE opt=1.0049 base=1.0065
+    K=80: alpha 최적화... α*=1.850  RMSE opt=1.0056 base=1.0077
+    K=90: alpha 최적화... α*=1.950  RMSE opt=1.0066 base=1.0091
+    K=100: alpha 최적화... α*=2.000  RMSE opt=1.0071 base=1.0099
+
+  [COSINE]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0228 base=1.0228
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0121 base=1.0121
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0089 base=1.0089
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0082 base=1.0082
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0088 base=1.0088
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0100 base=1.0100
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0103 base=1.0103
+    K=80: alpha 최적화... α*=1.050  RMSE opt=1.0113 base=1.0114
+    K=90: alpha 최적화... α*=1.100  RMSE opt=1.0120 base=1.0123
+    K=100: alpha 최적화... α*=1.200  RMSE opt=1.0125 base=1.0130
+
+  [CPCC]
+    K=10: alpha 최적화... α*=0.650  RMSE opt=1.0085 base=1.0090
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9897 base=0.9897
+    K=30: alpha 최적화... α*=1.000  RMSE opt=0.9857 base=0.9857
+    K=40: alpha 최적화... α*=1.000  RMSE opt=0.9843 base=0.9843
+    K=50: alpha 최적화... α*=1.000  RMSE opt=0.9835 base=0.9835
+    K=60: alpha 최적화... α*=1.050  RMSE opt=0.9839 base=0.9840
+    K=70: alpha 최적화... α*=1.150  RMSE opt=0.9844 base=0.9846
+    K=80: alpha 최적화... α*=1.200  RMSE opt=0.9844 base=0.9848
+    K=90: alpha 최적화... α*=1.250  RMSE opt=0.9848 base=0.9853
+    K=100: alpha 최적화... α*=1.300  RMSE opt=0.9852 base=0.9858
+
+  [EUCLIDEAN]
+    K=10: alpha 최적화... α*=0.350  RMSE opt=1.0366 base=1.0404
+    K=20: alpha 최적화... α*=0.600  RMSE opt=1.0156 base=1.0175
+    K=30: alpha 최적화... α*=0.850  RMSE opt=1.0121 base=1.0126
+    K=40: alpha 최적화... α*=0.950  RMSE opt=1.0105 base=1.0106
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0098 base=1.0098
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0086 base=1.0086
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0090 base=1.0090
+    K=80: alpha 최적화... α*=1.050  RMSE opt=1.0096 base=1.0096
+    K=90: alpha 최적화... α*=1.150  RMSE opt=1.0100 base=1.0100
+    K=100: alpha 최적화... α*=1.200  RMSE opt=1.0104 base=1.0104
+
+  [IPWR]
+    K=10: alpha 최적화... α*=0.800  RMSE opt=0.9846 base=0.9845
+    K=20: alpha 최적화... α*=0.950  RMSE opt=0.9683 base=0.9683
+    K=30: alpha 최적화... α*=1.000  RMSE opt=0.9673 base=0.9673
+    K=40: alpha 최적화... α*=1.000  RMSE opt=0.9672 base=0.9672
+    K=50: alpha 최적화... α*=1.050  RMSE opt=0.9684 base=0.9686
+    K=60: alpha 최적화... α*=1.100  RMSE opt=0.9692 base=0.9696
+    K=70: alpha 최적화... α*=1.150  RMSE opt=0.9698 base=0.9705
+    K=80: alpha 최적화... α*=1.200  RMSE opt=0.9701 base=0.9711
+    K=90: alpha 최적화... α*=1.250  RMSE opt=0.9705 base=0.9719
+    K=100: alpha 최적화... α*=1.300  RMSE opt=0.9707 base=0.9723
+
+  [ITR]
+    K=10: alpha 최적화... α*=0.000  RMSE opt=1.0551 base=1.0940
+    K=20: alpha 최적화... α*=0.100  RMSE opt=1.0491 base=1.0506
+    K=30: alpha 최적화... α*=0.550  RMSE opt=1.0326 base=1.0334
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0251 base=1.0251
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0212 base=1.0212
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0185 base=1.0185
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0172 base=1.0172
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0163 base=1.0163
+    K=90: alpha 최적화... α*=1.000  RMSE opt=1.0155 base=1.0155
+    K=100: alpha 최적화... α*=1.000  RMSE opt=1.0160 base=1.0160
+
+  [JACCARD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0355 base=1.0355
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0179 base=1.0179
+    K=30: alpha 최적화... α*=1.000  RMSE opt=1.0140 base=1.0140
+    K=40: alpha 최적화... α*=1.000  RMSE opt=1.0131 base=1.0131
+    K=50: alpha 최적화... α*=1.000  RMSE opt=1.0137 base=1.0137
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0141 base=1.0141
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0152 base=1.0152
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0159 base=1.0159
+    K=90: alpha 최적화... α*=1.000  RMSE opt=1.0163 base=1.0163
+    K=100: alpha 최적화... α*=1.050  RMSE opt=1.0169 base=1.0170
+
+  [JMSD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=1.0176 base=1.0176
+    K=20: alpha 최적화... α*=1.000  RMSE opt=1.0068 base=1.0068
+    K=30: alpha 최적화... α*=1.150  RMSE opt=1.0039 base=1.0040
+    K=40: alpha 최적화... α*=1.300  RMSE opt=1.0047 base=1.0050
+    K=50: alpha 최적화... α*=1.500  RMSE opt=1.0055 base=1.0062
+    K=60: alpha 최적화... α*=1.600  RMSE opt=1.0063 base=1.0072
+    K=70: alpha 최적화... α*=1.650  RMSE opt=1.0073 base=1.0086
+    K=80: alpha 최적화... α*=1.750  RMSE opt=1.0084 base=1.0101
+    K=90: alpha 최적화... α*=1.800  RMSE opt=1.0089 base=1.0108
+    K=100: alpha 최적화... α*=1.850  RMSE opt=1.0095 base=1.0117
+
+  [KENDALL_TAU_B]
+    K=10: alpha 최적화... α*=0.250  RMSE opt=1.0426 base=1.0457
+    K=20: alpha 최적화... α*=0.400  RMSE opt=1.0202 base=1.0228
+    K=30: alpha 최적화... α*=0.450  RMSE opt=1.0145 base=1.0167
+    K=40: alpha 최적화... α*=0.500  RMSE opt=1.0123 base=1.0143
+    K=50: alpha 최적화... α*=0.500  RMSE opt=1.0123 base=1.0139
+    K=60: alpha 최적화... α*=0.550  RMSE opt=1.0122 base=1.0135
+    K=70: alpha 최적화... α*=0.550  RMSE opt=1.0123 base=1.0134
+    K=80: alpha 최적화... α*=0.600  RMSE opt=1.0124 base=1.0134
+    K=90: alpha 최적화... α*=0.600  RMSE opt=1.0125 base=1.0134
+    K=100: alpha 최적화... α*=0.600  RMSE opt=1.0126 base=1.0134
+
+  [MANHATTAN]
+    K=10: alpha 최적화... α*=0.200  RMSE opt=1.0522 base=1.0638
+    K=20: alpha 최적화... α*=0.300  RMSE opt=1.0251 base=1.0353
+    K=30: alpha 최적화... α*=0.400  RMSE opt=1.0202 base=1.0279
+    K=40: alpha 최적화... α*=0.450  RMSE opt=1.0191 base=1.0251
+    K=50: alpha 최적화... α*=0.500  RMSE opt=1.0173 base=1.0227
+    K=60: alpha 최적화... α*=0.500  RMSE opt=1.0168 base=1.0218
+    K=70: alpha 최적화... α*=0.550  RMSE opt=1.0172 base=1.0216
+    K=80: alpha 최적화... α*=0.550  RMSE opt=1.0167 base=1.0209
+    K=90: alpha 최적화... α*=0.600  RMSE opt=1.0170 base=1.0208
+    K=100: alpha 최적화... α*=0.600  RMSE opt=1.0172 base=1.0208
+
+  [MSD]
+    K=10: alpha 최적화... α*=1.000  RMSE opt=0.9884 base=0.9884
+    K=20: alpha 최적화... α*=1.000  RMSE opt=0.9752 base=0.9752
+    K=30: alpha 최적화... α*=2.300  RMSE opt=0.9751 base=0.9764
+    K=40: alpha 최적화... α*=4.000  RMSE opt=0.9769 base=0.9804
+    K=50: alpha 최적화... α*=5.500  RMSE opt=0.9784 base=0.9841
+    K=60: alpha 최적화... α*=7.000  RMSE opt=0.9800 base=0.9881
+    K=70: alpha 최적화... α*=8.500  RMSE opt=0.9805 base=0.9907
+    K=80: alpha 최적화... α*=9.500  RMSE opt=0.9815 base=0.9934
+    K=90: alpha 최적화... α*=10.000  RMSE opt=0.9829 base=0.9964
+    K=100: alpha 최적화... α*=10.000  RMSE opt=0.9847 base=0.9991
+
+  [PCC]
+    K=10: alpha 최적화... α*=0.400  RMSE opt=1.0324 base=1.0338
+    K=20: alpha 최적화... α*=0.600  RMSE opt=1.0108 base=1.0120
+    K=30: alpha 최적화... α*=0.700  RMSE opt=1.0055 base=1.0064
+    K=40: alpha 최적화... α*=0.750  RMSE opt=1.0041 base=1.0047
+    K=50: alpha 최적화... α*=0.850  RMSE opt=1.0049 base=1.0051
+    K=60: alpha 최적화... α*=0.900  RMSE opt=1.0053 base=1.0054
+    K=70: alpha 최적화... α*=0.900  RMSE opt=1.0055 base=1.0056
+    K=80: alpha 최적화... α*=0.950  RMSE opt=1.0058 base=1.0058
+    K=90: alpha 최적화... α*=0.950  RMSE opt=1.0057 base=1.0058
+    K=100: alpha 최적화... α*=1.000  RMSE opt=1.0060 base=1.0060
+
+  [SPCC]
+    K=10: alpha 최적화... α*=0.500  RMSE opt=1.0293 base=1.0301
+    K=20: alpha 최적화... α*=0.750  RMSE opt=1.0096 base=1.0102
+    K=30: alpha 최적화... α*=0.800  RMSE opt=1.0048 base=1.0052
+    K=40: alpha 최적화... α*=0.850  RMSE opt=1.0035 base=1.0038
+    K=50: alpha 최적화... α*=0.950  RMSE opt=1.0042 base=1.0042
+    K=60: alpha 최적화... α*=1.000  RMSE opt=1.0045 base=1.0045
+    K=70: alpha 최적화... α*=1.000  RMSE opt=1.0047 base=1.0047
+    K=80: alpha 최적화... α*=1.000  RMSE opt=1.0051 base=1.0051
+    K=90: alpha 최적화... α*=1.000  RMSE opt=1.0051 base=1.0051
+    K=100: alpha 최적화... α*=1.000  RMSE opt=1.0053 base=1.0053
+
+  [SRC]
+    K=10: alpha 최적화... α*=0.250  RMSE opt=1.0414 base=1.0443
+    K=20: alpha 최적화... α*=0.450  RMSE opt=1.0201 base=1.0223
+    K=30: alpha 최적화... α*=0.450  RMSE opt=1.0141 base=1.0162
+    K=40: alpha 최적화... α*=0.500  RMSE opt=1.0119 base=1.0137
+    K=50: alpha 최적화... α*=0.500  RMSE opt=1.0121 base=1.0135
+    K=60: alpha 최적화... α*=0.550  RMSE opt=1.0121 base=1.0132
+    K=70: alpha 최적화... α*=0.550  RMSE opt=1.0121 base=1.0131
+    K=80: alpha 최적화... α*=0.600  RMSE opt=1.0120 base=1.0129
+    K=90: alpha 최적화... α*=0.600  RMSE opt=1.0124 base=1.0131
+    K=100: alpha 최적화... α*=0.650  RMSE opt=1.0126 base=1.0132
+
+  [SAVED] [fold_10] /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/results/inner_sim/fold_10/grid_search_results_20260312_215403.csv
+  [SAVED] [fold_10] /Users/chp_mini/Dropbox/python_workspace(백업)/imputation_project/results/inner_sim/fold_10/alpha_optimization_history_20260312_215403.csv
+  [TIME] [fold_10] elapsed: 382.4 min
+
+[DONE] All results saved: results/inner_sim/combined/
+
+================================================================================
+  DONE  Total elapsed: 1913.5 min
+  End: 2026-03-12 21:54:05
+================================================================================

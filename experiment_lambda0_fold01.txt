@@ -1,0 +1,31 @@
+======================================================================
+  inner_sim multi-lambda re-evaluation  (fold_01)
+  Lambda values: [0.0]
+  Start: 2026-04-08 08:25:57
+======================================================================
+
+[HISTORY] alpha_optimization_history_20260311_132613.csv
+  rows=67420, methods=17, K_range=[np.int64(10), np.int64(20), np.int64(30), np.int64(40), np.int64(50), np.int64(60), np.int64(70), np.int64(80), np.int64(90), np.int64(100)]
+
+[DATA] Loading matrices...
+  train_full : (1682, 943)
+  train_inner: (1682, 943)
+  test       : (1682, 943)
+
+[ALPHA SELECTION] 1 lambda values
+  lambda=0.000 -> avg_alpha=1.412
+
+[CACHE] 337 unique (method, K, alpha) → test prediction
+
+[EVAL] Running test predictions (sim_inner)...
+  0/337 (0%)  20/337 (6%)  40/337 (12%)  60/337 (18%)  80/337 (24%)  100/337 (30%)  120/337 (36%)  140/337 (42%)  160/337 (47%)  180/337 (53%)  200/337 (59%)  220/337 (65%)  240/337 (71%)  260/337 (77%)  280/337 (83%)  300/337 (89%)  320/337 (95%)
+  337 predictions cached.
+
+[ASSEMBLE] Building per-lambda result files...
+  lambda=0.000: avg_alpha=1.412 | avg_test_RMSE=1.0045 | 3400 rows -> grid_search_results_inner_lambda_0.0_v1_20260408_082727.csv
+
+======================================================================
+  DONE  Total: 784.4s  (13.1 min)
+  End  : 2026-04-08 08:39:02
+  Output: results/inner_sim/fold_01/
+======================================================================

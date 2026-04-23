@@ -1,0 +1,898 @@
+% !TeX program = xelatex
+%─────────────────────────────────────────────────────────────────────────────
+%  test_summary.tex
+%  Beamer slide deck – MovieLens 10-fold experiment report
+%─────────────────────────────────────────────────────────────────────────────
+\documentclass[aspectratio=169,10pt]{beamer}
+
+%─── 폰트 & 한국어 ───────────────────────────────────────────────────────────
+\usepackage{fontspec}
+\usepackage[hangul]{kotex}
+\setmonofont{Consolas}
+
+%─── 테마 ────────────────────────────────────────────────────────────────────
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\usefonttheme[onlymath]{serif}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+	\leavevmode%
+	\hbox{%
+		\begin{beamercolorbox}[wd=.40\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+			\usebeamerfont{author in head/foot}\insertshortauthor
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.40\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+			\usebeamerfont{title in head/foot}\insertshorttitle
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.20\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+			\usebeamerfont{date in head/foot}
+			\insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+		\end{beamercolorbox}}%
+	\vskip0pt%
+}
+
+%─── 패키지 ──────────────────────────────────────────────────────────────────
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows}
+\usepackage{graphicx}
+
+%─── 색 정의 ─────────────────────────────────────────────────────────────────
+\definecolor{posblue}{RGB}{30,100,200}
+\definecolor{negred}{RGB}{210,40,40}
+\definecolor{testgreen}{RGB}{0,150,80}
+\definecolor{hilight}{RGB}{255,230,100}
+
+%─── 메타정보 ─────────────────────────────────────────────────────────────────
+\title[MovieLens 10-Fold Report]{MovieLens 10-Fold 실험 결과 리포트\\
+			 \small Baseline(\(\alpha=1\)) vs \(\alpha\)-최적화/정규화 비교}
+\subtitle{랩미팅 보고용 상세 요약}
+\author[발표자]{[]}
+\institute{[]}
+\date{\today}
+
+\begin{document}
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}{목차}
+	\tableofcontents[hideallsubsections]
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{실험 목적과 설정}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{핵심 질문}
+	\begin{block}{Research Question}
+		Validation 기반 \(\alpha\) 최적화(및 \(\lambda\)-정규화)가\\
+		실제 Test 성능(RMSE)을 개선하는가?
+	\end{block}
+
+	\vspace{0.4em}
+	\begin{columns}[T]
+		\column{0.49\textwidth}
+			\textbf{비교 대상}
+			\begin{itemize}
+				\item Baseline: \(\alpha = 1\)
+				\item Optimized: Validation MSE 최소 \(\alpha\)
+				\item Regularized: \(\text{MSE}_{val}+\lambda|\alpha-1|\)
+			\end{itemize}
+
+			\textbf{데이터/프로토콜}
+			\begin{itemize}
+				\item MovieLens 1M
+				\item 10-Fold Cross Validation
+				\item 17개 유사도 지표, 다양한 \(K\), TopN
+			\end{itemize}
+
+		\column{0.49\textwidth}
+			\textbf{평가 지표}
+			\begin{itemize}
+				\item 1차: Test RMSE
+				\item 보조: MAD, Precision@N, Recall@N
+			\end{itemize}
+
+			\vspace{0.4em}
+			\begin{alertblock}{검증 관점}
+				Validation 최적화 성과와 Test 일반화 성과를 분리해 해석.
+			\end{alertblock}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{평가 파이프라인 (요약)}
+	\begin{center}
+	\begin{tikzpicture}[
+		node/.style={draw, rounded corners=3pt, minimum width=2.9cm,
+								 minimum height=0.85cm, align=center, font=\small, fill=blue!10},
+		result/.style={node, fill=green!12},
+		arrow/.style={->, thick}
+	]
+		\node[node] (f1) {Fold 분할};
+		\node[node, right=1.1cm of f1] (f2) {Train/Val로\(\alpha\) 탐색};
+		\node[node, right=1.1cm of f2] (f3) {Train Full 재학습};
+		\node[result, below=0.9cm of f2] (f4) {Test 평가\\RMSE 집계};
+
+		\draw[arrow] (f1) -- (f2);
+		\draw[arrow] (f2) -- (f3);
+		\draw[arrow] (f2) -- (f4);
+		\draw[arrow] (f3) -- (f4);
+	\end{tikzpicture}
+	\end{center}
+
+	\vspace{0.4em}
+	\begin{itemize}
+		\item 핵심: Test는 \textbf{최종 1회 평가}에만 사용
+		\item 이 리포트는 누적 실험 결과(\texttt{docs}/\texttt{results})를 통합 요약
+	\end{itemize}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{핵심 결과}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{메인 결과: Baseline이 최종 Test에서 가장 우수}
+	\begin{center}
+	\renewcommand{\arraystretch}{1.35}
+	\begin{tabular}{l|c|c|c}
+		\toprule
+		\textbf{설정} & \textbf{Test RMSE} & \textbf{vs Baseline} & \textbf{평균 \(\alpha\)} \\
+		\midrule
+		\rowcolor{testgreen!20}
+		\textbf{Baseline (\(\alpha=1\))} & \textbf{1.006157} & \textbf{기준} & 1.000 \\
+		Optimized (원본) & 1.017182 & +1.10\% \textcolor{negred}{$\uparrow$} & 2.039 \\
+		\(\lambda=0.001\) & 1.026638 & +2.04\% \textcolor{negred}{$\uparrow$} & 3.705 \\
+		\(\lambda=0.015\) & 1.016702 & +1.05\% \textcolor{negred}{$\uparrow$} & 2.027 \\
+		\(\lambda=0.030\) & 1.011311 & +0.51\% \textcolor{negred}{$\uparrow$} & 1.570 \\
+		\bottomrule
+	\end{tabular}
+	\end{center}
+
+	\vspace{0.5em}
+	\begin{alertblock}{핵심 결론}
+		\(\alpha\) 최적화는 Validation에서는 유리해 보이지만,
+		최종 Test 일반화에서는 \(\alpha=1\) baseline을 넘지 못함.
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{집계 단위 명시: 앞 슬라이드 숫자는 무엇의 평균인가?}
+	\begin{block}{현재 리포트의 주 집계 기준}
+		\texttt{all\_folds\_grid\_results\_20260129\_063659.csv} 기준으로,
+		\textbf{fold 8--10}, 17개 유사도, 모든 K×TopN 조합 평균.
+	\end{block}
+
+	\vspace{0.4em}
+	\begin{columns}[T]
+		\column{0.52\textwidth}
+			\textbf{집계 스케일}
+			\begin{itemize}
+				\item Fold: 3개 (8, 9, 10)
+				\item Method: 17개
+				\item 조합: K=10\textasciitilde100, TopN=5\textasciitilde50
+				\item 총 비교쌍: 5,100개 (baseline vs optimized)
+			\end{itemize}
+
+		\column{0.44\textwidth}
+			\textbf{전체 평균 RMSE}
+			\begin{itemize}
+				\item Baseline: 1.0151
+				\item Optimized: 1.0340
+				\item 차이: +1.864\% (optimized 악화)
+			\end{itemize}
+	\end{columns}
+
+	\vspace{0.3em}
+	{\small 따라서 앞 결과는 ``단일 fold/단일 method''가 아니라
+	\textbf{fold×similarity×grid 전체 평균} 관점의 결론임.}
+\end{frame}
+
+\begin{frame}{정규화(\(\lambda\)) 효과: 개선은 있으나 baseline 미달}
+	\begin{columns}[T]
+		\column{0.52\textwidth}
+			\textbf{Corrected 재평가 요약 (\texttt{lambda\_comprehensive\_analysis\_corrected})}
+			\vspace{0.2em}
+			\renewcommand{\arraystretch}{1.25}
+			\begin{tabular}{c|c|c}
+				\toprule
+				\(\lambda\) & Optimized RMSE & vs 해당 Baseline \\
+				\midrule
+				0.000$^{*}$ & 1.011741 & +0.43\% \\
+				0.001 & 1.026238 & +1.87\% \\
+				0.010 & 1.019548 & +1.21\% \\
+				0.020 & 1.014515 & +0.71\% \\
+				0.025 & 1.012672 & +0.53\% \\
+				0.030 & \textbf{1.011298} & \textbf{+0.39\%} \\
+				\bottomrule
+			\end{tabular}
+
+			{\tiny $^{*}$\(\lambda=0\): 기존 재평가 로직과 동일한 후처리 산출(검증용).}
+
+		\column{0.45\textwidth}
+			\textbf{해석}
+			\begin{itemize}
+				\item \(\lambda\uparrow\) 시 극단 \(\alpha\) 억제
+				\item 원본 optimized 대비는 개선
+				\item 그러나 \(\alpha=1\) baseline 대비로는 미달
+			\end{itemize}
+
+			\begin{block}{정량 변화}
+				RMSE: 1.0262 \(\rightarrow\) 1.0113\\
+				평균 \(\alpha\): 3.71 \(\rightarrow\) 1.57
+			\end{block}
+	\end{columns}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Fold·유사도 분해 분석}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}[shrink=5]{Fold별 평균 성능 분해 (1--10 fold)}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{c|c|c|c}
+			\toprule
+			Fold & Base & Opt & \(\Delta\%\) \\
+			\midrule
+			1 & 1.0072 & 1.0197 & +1.24 \\
+			2 & 1.0058 & 1.0165 & +1.06 \\
+			3 & 1.0133 & 1.0254 & +1.19 \\
+			4 & 1.0135 & 1.0270 & +1.33 \\
+			5 & 0.9970 & 0.9973 & +0.03 \\
+			\bottomrule
+		\end{tabular}
+
+		\column{0.48\textwidth}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{c|c|c|c}
+			\toprule
+			Fold & Base & Opt & \(\Delta\%\) \\
+			\midrule
+			6  & 1.0098 & 1.0270 & +1.71 \\
+			7  & 1.0098 & 1.0296 & +1.96 \\
+			8  & 1.0274 & 1.0448 & +1.69 \\
+			9  & 1.0060 & 1.0264 & +2.03 \\
+			10 & 1.0120 & 1.0310 & +1.87 \\
+			\bottomrule
+		\end{tabular}
+	\end{columns}
+
+	\vspace{0.35em}
+	\begin{itemize}
+		\item 10개 fold 평균: Baseline 1.0102 vs Optimized 1.0245 (\(+1.41\%\))
+		\item Fold 5를 제외한 전 구간에서 악화, Fold 5도 개선이 아닌 사실상 동률
+	\end{itemize}
+
+	{\scriptsize 집계 기준: fold별 대표 \texttt{grid\_search\_results\_*.csv} (비-reeval), fold1은 \texttt{all\_folds\_grid\_results\_20260117\_003457.csv} 사용}
+\end{frame}
+
+\begin{frame}[shrink=5]{유사도(method)별 분해: 누가 개선/악화를 주도하는가}
+	\begin{columns}[T]
+		\column{0.50\textwidth}
+			\textbf{개선된 method (Optimized 우위)}
+			\renewcommand{\arraystretch}{1.2}
+			\begin{tabular}{l|c|c}
+				\toprule
+				Method & \(\Delta\)RMSE\% & Win-rate \\
+				\midrule
+				acos    & -2.51\% & 100\% \\
+				ari     & -1.24\% & 100\% \\
+				msd     & -0.95\% & 100\% \\
+				ami     & -0.91\% & 100\% \\
+				jmsd    & -0.24\% & 93.3\% \\
+				\bottomrule
+			\end{tabular}
+
+		\column{0.48\textwidth}
+			\textbf{악화된 method (Optimized 열세)}
+			\renewcommand{\arraystretch}{1.2}
+			\begin{tabular}{l|c|c}
+				\toprule
+				Method & \(\Delta\)RMSE\% & Win-rate \\
+				\midrule
+				pcc       & +3.03\% & 16.7\% \\
+				cpcc      & +4.66\% & 0\% \\
+				manhattan & +5.20\% & 0\% \\
+				chebyshev & +8.64\% & 0\% \\
+				euclidean & +8.97\% & 0\% \\
+				\bottomrule
+			\end{tabular}
+	\end{columns}
+
+	\vspace{0.4em}
+	\begin{alertblock}{해석 논리}
+		일부 method에서의 이득이 존재해도,
+		다수 method의 큰 악화 폭이 전체 평균을 baseline 이하로 끌어내림.
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}[shrink=5]{하이퍼파라미터(K, TopN)별 영향 분석}
+	\begin{columns}[T]
+		\column{0.50\textwidth}
+			\textbf{K (이웃 수)의 영향}
+			\renewcommand{\arraystretch}{1.2}
+			\begin{tabular}{c|c|c|c}
+				\toprule
+				K & Base RMSE & Opt RMSE & \(\Delta\) \\
+				\midrule
+				10  & 1.040 & 1.045 & +0.005 \\
+				30  & 1.012 & 1.030 & +0.017 \\
+				50  & \textbf{1.010} & 1.031 & +0.021 \\
+				70  & 1.011 & 1.033 & +0.022 \\
+				100 & 1.012 & 1.035 & +0.023 \\
+				\bottomrule
+			\end{tabular}
+			\begin{itemize}
+				\item K=50 부근에서 Baseline 성능 최고.
+				\item K가 커질수록 최적화(\(\alpha\)) 적용 시 성능 악화 폭(\(\Delta\))이 더 커짐.
+			\end{itemize}
+
+		\column{0.48\textwidth}
+			\textbf{TopN (추천 목록 크기)의 영향}
+			\renewcommand{\arraystretch}{1.2}
+			\begin{tabular}{c|c|c|c}
+				\toprule
+				TopN & Base RMSE & Opt RMSE & \(\Delta\) \\
+				\midrule
+				5  & 1.015 & 1.034 & +0.018 \\
+				20 & 1.015 & 1.034 & +0.018 \\
+				50 & 1.015 & 1.034 & +0.018 \\
+				\bottomrule
+			\end{tabular}
+			\begin{itemize}
+				\item TopN은 \textbf{RMSE/MAD 예측 성능에 전혀 영향을 주지 않음}.
+				\item 예측 로직은 K에만 의존하며, TopN은 Precision/Recall 등 랭킹 평가 지표 계산에만 사용됨.
+			\end{itemize}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{종합 논리: 왜 평균 결론이 baseline 우위인가?}
+	\begin{enumerate}
+		\item \textbf{Fold 축}: 1--10 대부분에서 optimized가 열세 (일관성)
+		\item \textbf{Method 축}: 개선군보다 악화군의 폭이 더 큼 (비대칭)
+		\item \textbf{Aggregation}: 전체 조합 평균 시 열세가 누적
+	\end{enumerate}
+
+	\vspace{0.4em}
+	\begin{block}{실무적 해석}
+		\(\alpha\)-최적화는 ``항상 적용''보다
+		\textbf{method 선택적 적용}이 더 타당하며,
+		기본 정책은 \(\alpha=1\) baseline이 안전.
+	\end{block}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{원인 분석}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{왜 과적합이 발생하는가?}
+	\begin{block}{관측된 메커니즘}
+		\begin{enumerate}
+			\item Validation에서 \(\alpha\neq1\)가 MSE를 낮춤
+			\item 선택된 \(\alpha\)를 Test에 적용하면 성능 저하 빈번
+			\item Validation 분포가 Test 일반화를 충분히 대표하지 못함
+		\end{enumerate}
+	\end{block}
+
+	\vspace{0.3em}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+			\textbf{근거 A: 구성별 혼합 성능}
+			\begin{itemize}
+				\item (1--10 fold 평균) optimized: +1.41\% 악화
+				\item fold별 차이는 대부분 양수(예외: fold5는 +0.03\%)
+			\end{itemize}
+
+			\textbf{근거 B: 방법별 편차}
+			\begin{itemize}
+				\item ACOS: -2.51\% (개선)
+				\item EUCLIDEAN: +8.97\% (악화)
+			\end{itemize}
+
+		\column{0.48\textwidth}
+			\textbf{근거 C: 단순 모델의 안정성}
+			\begin{itemize}
+				\item \(\alpha=1\): 조합 간 분산이 작고 일관
+				\item 최적화 \(\alpha\): 조합별 값이 달라 변동성 증가
+			\end{itemize}
+
+			\begin{alertblock}{요약}
+				Validation 최적화 신호가 Test 일반화 신호와 불일치.
+			\end{alertblock}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[shrink=5]{시각화 기반 구체적 패턴 분석 (Validation vs Test)}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+			\textbf{Validation vs Test 개선도 산점도}
+			\begin{center}
+				\includegraphics[width=0.95\textwidth]{../results/figures/val_vs_test_scatter.pdf}
+			\end{center}
+			{\scriptsize * 양수(+)는 Optimized가 Baseline보다 우수함을 의미}
+
+		\column{0.50\textwidth}
+			\textbf{과적합(Overfitting) 패턴 확인}
+			\begin{itemize}
+				\item \textbf{Validation}: 대부분의 점이 0보다 큼 (우측 분포).
+				\item \textbf{Test}: 대부분의 점이 0보다 작음 (하단 분포).
+				\item 즉, Validation에서의 성능 향상이 Test로 이어지지 않음.
+			\end{itemize}
+
+			\vspace{0.3em}
+			\textbf{유사도별 구체적 편차 (Test RMSE 개선도)}
+			\renewcommand{\arraystretch}{1.2}
+			\begin{tabular}{l|c|c}
+				\toprule
+				Method & \(\Delta\) Test RMSE\% & 평가 \\
+				\midrule
+				\texttt{acos} & $-2.51\%$ & 개선 (우수) \\
+				\texttt{msd}  & $-0.95\%$ & 개선 (우수) \\
+				\texttt{pcc}  & $+3.03\%$ & 악화 (열세) \\
+				\texttt{euclidean} & $+8.97\%$ & 크게 악화 \\
+				\bottomrule
+			\end{tabular}
+			{\scriptsize $\Delta = (\text{RMSE}_{opt}-\text{RMSE}_{base})/\text{RMSE}_{base}\times100$;\\음수(−)는 Optimized 우위.}
+			\begin{itemize}
+				\item \(\lambda\) 값이 커질수록(정규화 강도 증가) Test에서의 성능 악화 폭이 줄어드는 경향 관찰.
+			\end{itemize}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{\(\lambda\)와 \(\alpha\) 분포 변화 (\texttt{lambda\_validation\_simulation.csv})}
+	\begin{center}
+	\renewcommand{\arraystretch}{1.25}
+	\begin{tabular}{c|c|c|c}
+		\toprule
+		\(\lambda\) & Avg \(\alpha\) & Extreme \(\alpha\ge2\) & Near baseline (0.9--1.1) \\
+		\midrule
+		0.000 & 3.852 & 69.8\% & 1.1\% \\
+		0.010 & 2.252 & 42.7\% & 32.8\% \\
+		0.020 & 1.843 & 37.5\% & 42.6\% \\
+		0.030 & 1.563 & 30.0\% & 51.8\% \\
+		0.050 & 1.127 & 5.8\%  & 77.4\% \\
+		0.100 & 0.995 & 0.0\%  & 98.6\% \\
+		\bottomrule
+	\end{tabular}
+	\end{center}
+
+	\vspace{0.4em}
+	\begin{itemize}
+		\item \(\lambda\uparrow\)는 분명히 extreme \(\alpha\)를 줄임
+		\item 하지만 최종 RMSE 관점에서는 \(\alpha=1\) 단순 baseline이 여전히 최강
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=5]{시각 자료: \(\lambda\) 시뮬레이션 분석}
+	\begin{center}
+		\includegraphics[width=0.86\textwidth]{../results/lambda_optimization/lambda_validation_analysis.png}
+	\end{center}
+	\vspace{0.2em}
+	{\small
+	그림은 \(\lambda\) 증가 시 분포 안정화 경향을 보여주며,
+	실제 운영 선택에서는 ``안정화 효과 vs baseline 성능''의 trade-off를 함께 봐야 함.
+	}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{실무 권고안}
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{의사결정 가이드}
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{l|l|l}
+		\toprule
+		\textbf{목표} & \textbf{권장 설정} & \textbf{이유} \\
+		\midrule
+		최고 RMSE 성능 & \textbf{\(\alpha=1\) 고정} & Test RMSE 최소 \\
+		재현성/해석성 & \(\alpha=1\) 고정 & 파라미터 단순, 설명 용이 \\
+		안정성 중심 완화안 & \(\lambda\in[0.02,0.03]\) & extreme \(\alpha\) 감소 \\
+		method별 미세 튜닝 & method별 정책 분리 & ACOS/ARI와 EUCLIDEAN 이질성 \\
+		\bottomrule
+	\end{tabular}
+
+	\vspace{0.5em}
+	\begin{alertblock}{현재 프로젝트 기본안}
+		운영 기본값은 \textbf{\(\alpha=1\)}를 채택하고,
+		method별 후속 실험에서만 제한적으로 \(\lambda\)-정규화 적용.
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{후속 실험 제안 (Conference-ready)}
+	\begin{enumerate}
+		\item \textbf{Method-specific regularization}: 17개 method에 개별 \(\lambda\) 매핑
+		\item \textbf{완전 10-fold 재검증}: 동일 파이프라인으로 fold별 분산 보고
+		\item \textbf{목적함수 확장}: RMSE 외 Precision@N 중심 최적화 비교
+		\item \textbf{정책형 결론}: 
+			\begin{itemize}
+				\item 기본 정책: \(\alpha=1\)
+				\item 예외 정책: 일부 method만 최적 \(\alpha\) 사용
+			\end{itemize}
+	\end{enumerate}
+
+	\vspace{0.4em}
+	\begin{block}{발표 메시지}
+		``복잡한 최적화보다, \(\alpha=1\) baseline의 강건성이 실제 Test에서 더 우수했다.''
+	\end{block}
+\end{frame}
+
+\begin{frame}[plain]
+	\begin{center}
+		\vspace{2.0cm}
+		{\LARGE 감사합니다}\\[1.2em]
+		{\large 질문 및 토론 환영합니다}\\[2em]
+		\begin{tabular}{ll}
+			\textbf{슬라이드} & \texttt{documentation/test\_summary.tex} \\
+			\textbf{핵심 결과} & \texttt{results/lambda\_comprehensive\_analysis\_corrected\_20260123\_120312.csv} \\
+			\textbf{분석 노트} & \texttt{docs/LAMBDA\_ANALYSIS\_SUMMARY.md}
+		\end{tabular}
+	\end{center}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Claude 분석: 10-Fold 전체 재검토}
+%═════════════════════════════════════════════════════════════════════════════
+
+%── 책갈피 슬라이드 ──────────────────────────────────────────────────────────
+\begin{frame}[plain]
+	\begin{center}
+		\vspace{2.2cm}
+		{\LARGE \textbf{Claude 분석}}\\[0.8em]
+		{\large 10-Fold 전체 결과 재검토 및 메커니즘 분석}\\[0.6em]
+		{\small fold 8--10 집계 → \textbf{전체 10-fold} (N=17,000 configs)로 확장}
+	\end{center}
+\end{frame}
+
+%── 슬라이드 1: 전체 요약 ─────────────────────────────────────────────────────
+\begin{frame}{10-Fold 전체 요약: 결론은 동일, 수치 갱신}
+	\begin{center}
+	\renewcommand{\arraystretch}{1.35}
+	\begin{tabular}{l|c|c|c}
+		\toprule
+		\textbf{설정} & \textbf{Test RMSE} & \textbf{vs Baseline} & \textbf{Win Rate} \\
+		\midrule
+		\rowcolor{testgreen!20}
+		\textbf{Baseline (\(\alpha=1\))} & \textbf{1.010179} & \textbf{기준} & -- \\
+		Optimized (전체 평균) & 1.024460 & $+1.43\%$ \textcolor{negred}{$\uparrow$} & 31.6\% \\
+		\bottomrule
+	\end{tabular}
+	\end{center}
+
+	\vspace{0.4em}
+	\begin{columns}[T]
+		\column{0.50\textwidth}
+			\textbf{이전 집계(fold 8--10)와 비교}
+			\begin{itemize}
+				\item 이전: $\Delta=+1.87\%$, Win=20.6\%
+				\item 현재(전체): $\Delta=+1.43\%$, Win=31.6\%
+				\item \(\to\) 초기 fold(1--7)에서 overfitting이 다소 완화
+			\end{itemize}
+		\column{0.46\textwidth}
+			\begin{alertblock}{결론 유지}
+				10-fold 전체로 확장해도\\
+				\(\alpha=1\) baseline 우위는 불변.
+			\end{alertblock}
+	\end{columns}
+\end{frame}
+
+%── 슬라이드 2: Fold별 결과 ───────────────────────────────────────────────────
+\begin{frame}[shrink=5]{Fold별 결과: 전체 10-Fold (갱신)}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{c|c|c|c}
+			\toprule
+			Fold & Base & Opt & \(\Delta\%\) \\
+			\midrule
+			1 & 1.0072 & 1.0197 & $+1.26$ \\
+			2 & 1.0058 & 1.0165 & $+1.07$ \\
+			3 & 1.0133 & 1.0254 & $+1.21$ \\
+			4 & 1.0135 & 1.0270 & $+1.35$ \\
+			5 & 0.9970 & 0.9973 & $+0.04$ \\
+			\bottomrule
+		\end{tabular}
+
+		\column{0.48\textwidth}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{c|c|c|c}
+			\toprule
+			Fold & Base & Opt & \(\Delta\%\) \\
+			\midrule
+			6  & 1.0098 & 1.0270 & $+1.73$ \\
+			7  & 1.0098 & 1.0296 & $+1.98$ \\
+			8  & 1.0274 & 1.0448 & $+1.71$ \\
+			9  & 1.0060 & 1.0264 & $+2.05$ \\
+			10 & 1.0120 & 1.0310 & $+1.89$ \\
+			\bottomrule
+		\end{tabular}
+	\end{columns}
+
+	\vspace{0.3em}
+	\begin{itemize}
+		\item \textbf{10-fold 평균}: Baseline 1.0102 vs Optimized 1.0244 ($\Delta=+1.43\%$)
+		\item Fold~5(+0.04\%)를 제외한 9개 fold 모두 최적화가 열세
+		\item \textbf{fold 9가 최대 악화}($+2.05\%$), fold 5가 사실상 동률
+	\end{itemize}
+	{\scriptsize 집계: 17개 유사도 × K(10--100) × TopN(5--50) 평균}
+\end{frame}
+
+%── 슬라이드 3: Method 분류 ───────────────────────────────────────────────────
+\begin{frame}[shrink=5]{Method별 분류: 최적화 효과의 이질성 (10-fold)}
+	\begin{columns}[T]
+		\column{0.49\textwidth}
+			\textbf{\textcolor{testgreen}{Group A}: 최적화 일관 개선}
+			\renewcommand{\arraystretch}{1.15}
+			\begin{tabular}{l|r|r}
+				\toprule
+				Method & $\Delta\%$ & Win \\
+				\midrule
+				\texttt{acos} & $-2.54$ & 100\% \\
+				\texttt{ari}  & $-1.03$ & 93\% \\
+				\texttt{ami}  & $-0.72$ & 91\% \\
+				\bottomrule
+			\end{tabular}
+			{\scriptsize 모두 $\bar\alpha<1$: 유사도 차이 \textbf{완화}}
+
+			\vspace{0.6em}
+			\textbf{\textcolor{posblue}{Group B}: 미미/혼재}
+			\renewcommand{\arraystretch}{1.15}
+			\begin{tabular}{l|r|r}
+				\toprule
+				Method & $\Delta\%$ & Win \\
+				\midrule
+				\texttt{msd}     & $-0.48$ & 58\% \\
+				\texttt{jmsd}    & $-0.12$ & 60\% \\
+				\texttt{ipwr}    & $-0.08$ & 59\% \\
+				\texttt{cosine}  & $-0.06$ & 37\% \\
+				\texttt{jaccard} & $-0.01$ & 26\% \\
+				\bottomrule
+			\end{tabular}
+
+		\column{0.49\textwidth}
+			\textbf{\textcolor{negred}{Group C}: 최적화 일관 악화}
+			\renewcommand{\arraystretch}{1.15}
+			\begin{tabular}{l|r|r}
+				\toprule
+				Method & $\Delta\%$ & Win \\
+				\midrule
+				\texttt{itr}           & $+0.19$ & 3\% \\
+				\texttt{src}           & $+1.57$ & 1\% \\
+				\texttt{kendall\_tau\_b}& $+1.75$ & 0\% \\
+				\texttt{spcc}          & $+1.97$ & 0\% \\
+				\texttt{pcc}           & $+2.27$ & 1\% \\
+				\texttt{cpcc}          & $+2.98$ & 5\% \\
+				\texttt{manhattan}     & $+4.39$ & 0\% \\
+				\texttt{chebyshev}     & $+6.87$ & 2\% \\
+				\texttt{euclidean}     & $+7.34$ & 1\% \\
+				\bottomrule
+			\end{tabular}
+			{\scriptsize 모두 $\bar\alpha\gg1$: 유사도 차이 \textbf{증폭} → Overfitting}
+	\end{columns}
+\end{frame}
+
+%── 슬라이드 4: 메커니즘 분석 ─────────────────────────────────────────────────
+\begin{frame}{메커니즘 분석: \(\alpha\)의 두 가지 역할}
+	\begin{block}{핵심 관찰}
+		$S^{\alpha}$에서 \(\alpha\)는 유사도 차이를 \textbf{완화}(\(\alpha<1\)) 또는
+		\textbf{증폭}(\(\alpha>1\))하는 두 가지 반대 방향으로 작용.
+	\end{block}
+
+	\vspace{0.3em}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+			\textbf{Group A: \(\alpha<1\) = Smoothing}
+			\begin{itemize}
+				\item 이웃 간 가중치 차이를 줄임
+				\item 더 많은 이웃을 균등하게 참고
+				\item \(\to\) 정규화 효과 → 일반화 개선
+			\end{itemize}
+			\vspace{0.3em}
+			\begin{exampleblock}{직관}
+				``작은 유사도 차이에 덜 민감하게
+				만들어 robust한 예측 달성''
+			\end{exampleblock}
+
+		\column{0.48\textwidth}
+			\textbf{Group C: \(\alpha\gg1\) = Sharpening}
+			\begin{itemize}
+				\item 극소수의 아주 유사한 이웃에 집중
+				\item Validation의 특정 분포에 과적합
+				\item \(\to\) Test에서 일반화 실패
+			\end{itemize}
+			\vspace{0.3em}
+			\begin{alertblock}{직관}
+				``Validation의 우연한 패턴을
+				학습 → Test에서 과적합 발현''
+			\end{alertblock}
+	\end{columns}
+
+	\vspace{0.3em}
+	\begin{center}
+		\textbf{Validation 최고 RMSE} \(\neq\) \textbf{Test 최고 RMSE}: 두 값의 불일치가 핵심 문제.
+	\end{center}
+\end{frame}
+
+%── 슬라이드 5: 전략적 시사점 ─────────────────────────────────────────────────
+\begin{frame}{전략적 시사점 및 후속 방향}
+	\begin{columns}[T]
+		\column{0.50\textwidth}
+			\textbf{현재 결과의 의미}
+			\begin{itemize}
+				\item ``\(\alpha\) 최적화 무효''가 아니라
+					\textbf{method-dependent}한 것이 핵심 발견
+				\item Group A의 smoothing 효과는 재현 가능한 개선
+				\item 이 자체가 논문의 contribution 가능
+			\end{itemize}
+
+		\column{0.46\textwidth}
+			\textbf{후속 실험 (우선순위)}
+			\begin{enumerate}
+				\item \textbf{Method-selective 정책} 검증:\\
+					Group A: optimal \(\alpha\) 사용\\
+					Group C: \(\alpha=1\) 고정\\
+					→ 전체 hybrid RMSE 계산
+				\item \(\alpha\) 범위를 \([0,2]\)로 제한 후\\
+					Group C 과적합 감소 확인
+				\item Nested CV로 validation\\
+					overfitting 정도 정량화
+			\end{enumerate}
+	\end{columns}
+
+	\vspace{0.4em}
+	\begin{block}{발표 가능한 메시지}
+		``유사도 함수의 특성에 따라 \(\alpha\) 최적화 효과가 결정된다.
+		\(\alpha<1\)(smoothing)은 일반화를 개선하고,
+		\(\alpha\gg1\)(sharpening)은 validation overfitting을 유발한다.''
+	\end{block}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{파이프라인 점검: 잠재적 이슈 2가지}
+%═════════════════════════════════════════════════════════════════════════════
+
+%── 책갈피 ────────────────────────────────────────────────────────────────────
+\begin{frame}[plain]
+	\begin{center}
+		\vspace{2.2cm}
+		{\LARGE \textbf{파이프라인 점검}}\\[0.8em]
+		{\large 유사도 계산 데이터 소스 \& 음수 클리핑 영향}
+	\end{center}
+\end{frame}
+
+%── 이슈 1: 유사도 데이터 소스 ────────────────────────────────────────────────
+\begin{frame}{이슈 1: 유사도 행렬이 train\_full로 계산됨}
+	\begin{alertblock}{발견 사항}
+		\texttt{sim\_*.npy}는 \texttt{train.csv} (train\_inner + validation, 90\%)로
+		사전 계산됨. Phase~1에서 validation 데이터가 유사도에 이미 반영.
+	\end{alertblock}
+
+	\vspace{0.3em}
+	\begin{center}
+	\begin{tikzpicture}[
+		box/.style={draw, rounded corners=2pt, minimum width=2.4cm,
+					minimum height=0.7cm, align=center, font=\small},
+		leak/.style={box, fill=negred!15},
+		ok/.style={box, fill=testgreen!15},
+		arrow/.style={->, thick}
+	]
+		\node[leak] (sim) {유사도 계산\\{\scriptsize train\_full (90\%)}};
+		\node[ok, right=0.8cm of sim] (p1) {Phase 1\\{\scriptsize 학습: train\_inner}};
+		\node[ok, right=0.8cm of p1] (val) {평가\\{\scriptsize validation}};
+		\node[ok, below=0.6cm of p1] (p2) {Phase 2\\{\scriptsize 학습: train\_full}};
+		\node[ok, right=0.8cm of p2] (test) {평가\\{\scriptsize test}};
+
+		\draw[arrow] (sim) -- (p1);
+		\draw[arrow, dashed, negred] (sim) -- node[above, font=\tiny, negred]{val 포함!} (val);
+		\draw[arrow] (p1) -- (val);
+		\draw[arrow] (sim) -- (p2);
+		\draw[arrow] (p2) -- (test);
+	\end{tikzpicture}
+	\end{center}
+
+	\vspace{0.2em}
+	\begin{columns}[T]
+		\column{0.50\textwidth}
+			\textbf{영향}
+			\begin{itemize}
+				\item Validation MSE가 낙관적으로 산출
+				\item \(\alpha\neq1\)이 실제보다 ``좋아 보임''
+				\item Test에서 이 이점 부재 → 성능 하락
+			\end{itemize}
+		\column{0.46\textwidth}
+			\textbf{대응 방안}
+			\begin{itemize}
+				\item \textbf{train\_inner}로 유사도 재계산
+				\item 동일 실험 재수행하여 비교
+				\item 누수 제거 시 \(\alpha\) 최적화\\
+					효과가 달라지는지 검증
+			\end{itemize}
+	\end{columns}
+\end{frame}
+
+%── 이슈 2: 음수 클리핑 ──────────────────────────────────────────────────────
+\begin{frame}[shrink=5]{이슈 2: 음수 유사도 클리핑과 \(\alpha\)의 상호작용}
+	\begin{block}{현재 구현}
+		$S^{(\alpha)} = \max(S, 0)^{\alpha}$
+		\hfill {\small 음수 → 0 \textbf{후} \(\alpha\) 승}
+	\end{block}
+
+	\vspace{0.3em}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+			\textbf{음수 비율 (fold\_01 기준)}
+			\renewcommand{\arraystretch}{1.15}
+			\begin{tabular}{l|c|l}
+				\toprule
+				Method & 음수\% & Group \\
+				\midrule
+				ari   & 41.4\% & A \\
+				ami   & 40.9\% & A \\
+				pcc   & 30.0\% & C \\
+				acos  & 29.0\% & A \\
+				cosine & 0\%   & B \\
+				euclidean & 0\% & C \\
+				\bottomrule
+			\end{tabular}
+
+		\column{0.50\textwidth}
+			\textbf{\(\alpha\)와의 상호작용}
+
+			{\small\textbf{Group A} (\(\alpha<1\)): 이중 이득}
+			\begin{itemize}\small
+				\item 클리핑 → 노이즈(반상관) 제거
+				\item \(\alpha<1\) → 가중치 균등화
+				\item \(\to\) 정규화 효과 강화
+			\end{itemize}
+
+			\vspace{0.2em}
+			{\small\textbf{Group C} (\(\alpha\gg1\)): 이중 손해}
+			\begin{itemize}\small
+				\item 클리핑 → 이웃 다양성 감소
+				\item \(\alpha\gg1\) → 상위 1--2명에 집중
+				\item K=20 요청 → \textbf{실효 K$\approx$2--3}
+				\item \(\to\) 과적합 구조 형성
+			\end{itemize}
+	\end{columns}
+
+	\vspace{0.3em}
+	\begin{center}
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{c|c|c|c}
+		\toprule
+		& 클리핑 효과 & \(\alpha\) 효과 & 합산 \\
+		\midrule
+		\textbf{Group A} (\(\alpha<1\)) & 노이즈 제거 (이득) & 균등화 (이득) & \textcolor{testgreen}{\textbf{이중 이득}} \\
+		\textbf{Group C} (\(\alpha\gg1\)) & 다양성 손실 (손해) & 집중화 (손해) & \textcolor{negred}{\textbf{이중 손해}} \\
+		\bottomrule
+	\end{tabular}
+	\end{center}
+\end{frame}
+
+%═════════════════════════════════════════════════════════════════════════════
+\appendix
+%═════════════════════════════════════════════════════════════════════════════
+
+\begin{frame}{Appendix: 사용한 핵심 수식}
+	\begin{align*}
+		S_{uv}^{(\alpha)} &= \max(S_{uv},0)^{\alpha}\\[4pt]
+		\hat{r}_{ui} &= \frac{\sum_{v\in\mathcal{N}_K(u,i)} S_{uv}^{(\alpha)}r_{vi}}
+												 {\sum_{v\in\mathcal{N}_K(u,i)} S_{uv}^{(\alpha)}}\\[4pt]
+		\text{Score}(\alpha) &= \text{MSE}_{val}(\alpha) + \lambda|\alpha-1|
+	\end{align*}
+\end{frame}
+
+\begin{frame}[shrink=5]{Appendix: 결과 해석 시 주의점}
+	\begin{itemize}
+		\item 문서/CSV에 historical run과 corrected run이 공존함
+		\item 본 발표는 주요 결론(\(\alpha=1\) 우위, regularization 한계)에 초점을 둠
+		\item 숫자 표기는 각 파일의 공식 집계값을 직접 인용함
+	\end{itemize}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,47 @@
+======================================================================
+  inner_sim multi-lambda re-evaluation  (fold_07)
+  Lambda values: [0.0005, 0.001, 0.002, 0.003, 0.005, 0.01, 0.015, 0.02, 0.03]
+  Start: 2026-03-18 19:10:18
+======================================================================
+
+[HISTORY] alpha_optimization_history_20260312_024741.csv
+  rows=68720, methods=17, K_range=[np.int64(10), np.int64(20), np.int64(30), np.int64(40), np.int64(50), np.int64(60), np.int64(70), np.int64(80), np.int64(90), np.int64(100)]
+
+[DATA] Loading matrices...
+  train_full : (1682, 943)
+  train_inner: (1682, 943)
+  test       : (1682, 943)
+
+[ALPHA SELECTION] 9 lambda values
+  lambda=0.001 -> avg_alpha=1.251
+  lambda=0.001 -> avg_alpha=1.197
+  lambda=0.002 -> avg_alpha=1.047
+  lambda=0.003 -> avg_alpha=0.886
+  lambda=0.005 -> avg_alpha=0.791
+  lambda=0.010 -> avg_alpha=0.811
+  lambda=0.015 -> avg_alpha=0.838
+  lambda=0.020 -> avg_alpha=0.852
+  lambda=0.030 -> avg_alpha=0.881
+
+[CACHE] 868 unique (method, K, alpha) → test prediction
+
+[EVAL] Running test predictions (sim_inner)...
+  0/868 (0%)  20/868 (2%)  40/868 (5%)  60/868 (7%)  80/868 (9%)  100/868 (12%)  120/868 (14%)  140/868 (16%)  160/868 (18%)  180/868 (21%)  200/868 (23%)  220/868 (25%)  240/868 (28%)  260/868 (30%)  280/868 (32%)  300/868 (35%)  320/868 (37%)  340/868 (39%)  360/868 (41%)  380/868 (44%)  400/868 (46%)  420/868 (48%)  440/868 (51%)  460/868 (53%)  480/868 (55%)  500/868 (58%)  520/868 (60%)  540/868 (62%)  560/868 (65%)  580/868 (67%)  600/868 (69%)  620/868 (71%)  640/868 (74%)  660/868 (76%)  680/868 (78%)  700/868 (81%)  720/868 (83%)  740/868 (85%)  760/868 (88%)  780/868 (90%)  800/868 (92%)  820/868 (94%)  840/868 (97%)  860/868 (99%)
+  868 predictions cached.
+
+[ASSEMBLE] Building per-lambda result files...
+  lambda=0.001: avg_alpha=1.251 | avg_test_RMSE=1.0075 | 3400 rows -> grid_search_results_inner_lambda_0.0005_v1_20260318_191358.csv
+  lambda=0.001: avg_alpha=1.197 | avg_test_RMSE=1.0076 | 3400 rows -> grid_search_results_inner_lambda_0.001_v1_20260318_191358.csv
+  lambda=0.002: avg_alpha=1.047 | avg_test_RMSE=1.0078 | 3400 rows -> grid_search_results_inner_lambda_0.002_v1_20260318_191358.csv
+  lambda=0.003: avg_alpha=0.886 | avg_test_RMSE=1.0080 | 3400 rows -> grid_search_results_inner_lambda_0.003_v1_20260318_191358.csv
+  lambda=0.005: avg_alpha=0.791 | avg_test_RMSE=1.0083 | 3400 rows -> grid_search_results_inner_lambda_0.005_v1_20260318_191358.csv
+  lambda=0.010: avg_alpha=0.811 | avg_test_RMSE=1.0088 | 3400 rows -> grid_search_results_inner_lambda_0.01_v1_20260318_191358.csv
+  lambda=0.015: avg_alpha=0.838 | avg_test_RMSE=1.0089 | 3400 rows -> grid_search_results_inner_lambda_0.015_v1_20260318_191358.csv
+  lambda=0.020: avg_alpha=0.852 | avg_test_RMSE=1.0090 | 3400 rows -> grid_search_results_inner_lambda_0.02_v1_20260318_191358.csv
+  lambda=0.030: avg_alpha=0.881 | avg_test_RMSE=1.0094 | 3400 rows -> grid_search_results_inner_lambda_0.03_v1_20260318_191358.csv
+
+======================================================================
+  DONE  Total: 6480.4s  (108.0 min)
+  End  : 2026-03-18 20:58:19
+  Output: results/inner_sim/fold_01/
+======================================================================

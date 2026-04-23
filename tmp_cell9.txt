@@ -1,0 +1,82 @@
+def _knn_predict_removed_with_S(
+    X, XX, S, K=20, include_negative=False, fallback="user_mean"
+):
+    """
+    Predict removed entries using user-based KNN with similarity S.
+    """
+    X = np.asarray(X, dtype=float)
+    XX = np.asarray(XX, dtype=float)
+    S = np.asarray(S, dtype=float)
+
+    n_items, n_users = XX.shape
+    K_cap = min(int(K), max(0, n_users - 1))
+
+    # Find removed entries
+    removed = (~np.isnan(X)) & (np.isnan(XX))
+    if not np.any(removed):
+        raise ValueError("No removed entries to evaluate")
+
+    rated_mask = ~np.isnan(XX)
+    user_means = np.nanmean(XX, axis=0)
+    item_means = np.nanmean(XX, axis=1)
+    global_mean = float(np.nanmean(XX)) if np.isfinite(np.nanmean(XX)) else 0.0
+
+    preds = {}
+    se_sum = 0.0
+    cnt = 0
+
+    rows, cols = np.where(removed)
+    for i, j in zip(rows, cols):
+        # Find candidate neighbors
+        cand = np.where(rated_mask[i])[0]
+        cand = cand[cand != j]
+
+        if cand.size == 0 or K_cap == 0:
+            if np.isfinite(user_means[j]):
+                pred = float(user_means[j])
+            elif np.isfinite(item_means[i]):
+                pred = float(item_means[i])
+            else:
+                pred = global_mean
+        else:
+            sims = S[j, cand]
+            
+            if not include_negative:
+                keep = np.where(sims > 0.0)[0]
+                cand = cand[keep]
+                sims = sims[keep]
+
+            if cand.size == 0:
+                if np.isfinite(user_means[j]):
+                    pred = float(user_means[j])
+                elif np.isfinite(item_means[i]):
+                    pred = float(item_means[i])
+                else:
+                    pred = global_mean
+            else:
+                K_eff = min(K_cap, cand.size)
+                top = np.argsort(-sims)[:K_eff]
+                nbrs = cand[top]
+                w = sims[top]
+
+                w_sum = np.sum(w)
+                if not np.isfinite(w_sum) or np.isclose(w_sum, 0.0):
+                    if np.isfinite(user_means[j]):
+                        pred = float(user_means[j])
+                    elif np.isfinite(item_means[i]):
+                        pred = float(item_means[i])
+                    else:
+                        pred = global_mean
+                else:
+                    w = w / w_sum
+                    pred = float(np.dot(w, XX[i, nbrs]))
+
+        preds[(i, j)] = pred
+        true_val = float(X[i, j])
+        se_sum += (pred - true_val) ** 2
+        cnt += 1
+
+    mse = se_sum / cnt if cnt > 0 else np.nan
+    return preds, mse
+
+print("✅ KNN prediction function defined")

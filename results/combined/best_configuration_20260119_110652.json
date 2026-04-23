@@ -1,0 +1,22 @@
+{
+  "analysis_date": "2026-01-19 11:06:52",
+  "n_folds": 1,
+  "best_method": {
+    "name": "ipwr",
+    "K": 40,
+    "TopN": 25,
+    "alpha": 1.0,
+    "rmse_mean": 0.9636216001927568,
+    "rmse_std": 0.0042005222928928,
+    "rmse_cv_percent": 0.43590993519164,
+    "confidence_interval_95": [
+      0.9553885764986869,
+      0.9718546238868266
+    ]
+  },
+  "most_stable_method": {
+    "name": "jmsd",
+    "rmse_mean": 1.0013963657458858,
+    "cv_percent": 0.360866529292475
+  }
+}

@@ -1,0 +1,326 @@
+# -*- coding: utf-8 -*-
+"""
+main_experiment_v6_inner_sim_1_lambda.py
+----------------------------------------------------------------------
+inner_sim fold_01 결과에 대해 여러 lambda 값을 재평가.
+
+전략:
+  1. results/inner_sim/fold_01/alpha_optimization_history_*.csv 로드
+     (원본 inner_sim 실험에서 저장된 alpha 탐색 기록; raw mse 컬럼 포함)
+  2. 각 lambda에 대해  score = mse + lambda * |alpha - 1|  로 최적 alpha 재선택
+  3. sim_inner_{method}.npy 로 test 예측 (누수 없음 유지)
+  4. 결과를 results/inner_sim/fold_01/ 에 lambda 별로 저장
+     파일명: grid_search_results_inner_lambda_{lam}_v1_{timestamp}.csv
+
+실행:
+    python main_experiment_v6_inner_sim_1_lambda.py
+"""
+
+import os, time
+import numpy as np
+import pandas as pd
+from datetime import datetime
+
+# ── 설정 ──────────────────────────────────────────────────────────────────────
+FOLD_NUM   = 1
+FOLD_ID    = "fold_01"
+
+LAMBDA_VALUES = [0.0001, 0.0002, 0.0003, 0.0005, 0.0007, 0.001, 0.002, 0.003, 0.005, 0.010, 0.015, 0.020, 0.025, 0.030]
+
+TOPN_RANGE          = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+RELEVANCE_THRESHOLD = 4.0
+
+DATA_ROOT    = os.path.join(os.path.dirname(__file__), "data", "movielenz_data")
+RESULTS_ROOT = os.path.join(os.path.dirname(__file__), "results", "inner_sim")
+
+FOLD_DATA_DIR = os.path.join(DATA_ROOT,    FOLD_ID)
+FOLD_RES_DIR  = os.path.join(RESULTS_ROOT, FOLD_ID)
+
+# ── 헬퍼 함수 ─────────────────────────────────────────────────────────────────
+def _load_matrix_csv(path: str) -> pd.DataFrame:
+    df = pd.read_csv(path, low_memory=False)
+    lower = [str(c).lower() for c in df.columns]
+    if {"item", "user", "rating"}.issubset(lower):
+        def col(name):
+            for c in df.columns:
+                if str(c).lower() == name: return c
+        mat = df.pivot(index=col("item"), columns=col("user"), values=col("rating"))
+        mat = mat.apply(pd.to_numeric, errors="coerce")
+        mat.index   = mat.index.astype(int)
+        mat.columns = mat.columns.astype(int)
+        return mat.sort_index().sort_index(axis=1)
+    first_col = df.columns[0]
+    if str(first_col).lower() in ("item","items","item_id","id","index","unnamed: 0"):
+        df = df.set_index(first_col)
+    df.index.name = None; df.columns.name = None
+    df = df.apply(pd.to_numeric, errors="coerce")
+    df.index   = df.index.astype(int)
+    df.columns = df.columns.astype(int)
+    return df.sort_index().sort_index(axis=1)
+
+
+def _combine_single_similarity(S, alpha, clip_neg=True):
+    S = np.asarray(S, dtype=float)
+    S_eff = np.clip(S, 0.0, None) if clip_neg else S
+    S_eff = np.power(S_eff, float(alpha))
+    np.fill_diagonal(S_eff, 0.0)
+    return S_eff
+
+
+def _knn_predict_removed_with_S(X, XX, S, K=20, include_negative=False):
+    X  = np.asarray(X,  dtype=float)
+    XX = np.asarray(XX, dtype=float)
+    S  = np.asarray(S,  dtype=float)
+    n_items, n_users = XX.shape
+    K_cap = min(int(K), max(0, n_users - 1))
+    removed = (~np.isnan(X)) & (np.isnan(XX))
+    if not np.any(removed): return {}, np.nan
+    rated_mask  = ~np.isnan(XX)
+    user_means  = np.nanmean(XX, axis=0)
+    item_means  = np.nanmean(XX, axis=1)
+    global_mean = float(np.nanmean(XX)) if np.isfinite(np.nanmean(XX)) else 0.0
+    preds = {}
+    rows, cols = np.where(removed)
+    for i, j in zip(rows, cols):
+        cand = np.where(rated_mask[i])[0]
+        cand = cand[cand != j]
+        pred = global_mean
+        if cand.size > 0 and K_cap > 0:
+            sims = S[j, cand]
+            if not include_negative:
+                keep = np.where(sims > 0.0)[0]
+                cand = cand[keep]; sims = sims[keep]
+            if cand.size > 0:
+                K_eff = min(K_cap, cand.size)
+                top   = np.argsort(-sims)[:K_eff]
+                nbrs  = cand[top]; w = sims[top]
+                w_sum = np.sum(w)
+                if np.isfinite(w_sum) and not np.isclose(w_sum, 0.0):
+                    pred = float(np.dot(w / w_sum, XX[i, nbrs]))
+                elif np.isfinite(user_means[j]): pred = float(user_means[j])
+                elif np.isfinite(item_means[i]): pred = float(item_means[i])
+            elif np.isfinite(user_means[j]): pred = float(user_means[j])
+            elif np.isfinite(item_means[i]): pred = float(item_means[i])
+        elif np.isfinite(user_means[j]): pred = float(user_means[j])
+        elif np.isfinite(item_means[i]): pred = float(item_means[i])
+        preds[(i, j)] = pred
+    return preds, 0.0
+
+
+def rmse_mad_on_test(pred_df, test_df):
+    P = pred_df.values; T = test_df.values
+    mask = ~np.isnan(T)
+    if not mask.any(): return np.nan, np.nan
+    diff = P[mask] - T[mask]
+    return float(np.sqrt(np.mean(diff**2))), float(np.mean(np.abs(diff)))
+
+
+def precision_recall_at_n(pred, train, test, N, relevance_threshold=4.0):
+    precisions, recalls = [], []
+    for u_idx in range(pred.shape[1]):
+        train_col = train.iloc[:, u_idx]
+        test_col  = test.iloc[:,  u_idx]
+        pred_col  = pred.iloc[:,  u_idx]
+        cand_mask    = train_col.isna() & ~test_col.isna()
+        if not cand_mask.any(): continue
+        relevant_mask = (test_col >= relevance_threshold) & cand_mask
+        n_rel  = int(relevant_mask.sum())
+        scores = pred_col[cand_mask]
+        topN   = scores.sort_values(ascending=False).head(N).index
+        n_hit  = int(relevant_mask.loc[topN].sum()) if len(topN) else 0
+        prec_u = n_hit / min(N, int(cand_mask.sum())) if int(cand_mask.sum()) > 0 else np.nan
+        rec_u  = n_hit / n_rel if n_rel > 0 else np.nan
+        if not np.isnan(prec_u): precisions.append(prec_u)
+        if not np.isnan(rec_u):  recalls.append(rec_u)
+    return (float(np.mean(precisions)) if precisions else np.nan,
+            float(np.mean(recalls))    if recalls    else np.nan)
+
+
+# ── 메인 ──────────────────────────────────────────────────────────────────────
+print("=" * 70)
+print("  inner_sim multi-lambda re-evaluation  (fold_01)")
+print(f"  Lambda values: {LAMBDA_VALUES}")
+print(f"  Start: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+print("=" * 70 + "\n")
+
+global_start = time.time()
+
+# ── 1. Alpha history 로드 ─────────────────────────────────────────────────────
+hist_files = sorted([f for f in os.listdir(FOLD_RES_DIR)
+                     if f.startswith("alpha_optimization_history_") and f.endswith(".csv")])
+if not hist_files:
+    raise FileNotFoundError(f"alpha_optimization_history_*.csv not found in {FOLD_RES_DIR}")
+
+hist_path = os.path.join(FOLD_RES_DIR, hist_files[-1])
+print(f"[HISTORY] {hist_files[-1]}")
+df_history = pd.read_csv(hist_path)
+print(f"  rows={len(df_history)}, methods={df_history['method'].nunique()}, "
+      f"K_range={sorted(df_history['K'].unique())}\n")
+
+# ── 2. 데이터 로드 ────────────────────────────────────────────────────────────
+print("[DATA] Loading matrices...")
+XX_train_full  = _load_matrix_csv(os.path.join(FOLD_DATA_DIR, "train.csv"))
+XX_train_inner = _load_matrix_csv(os.path.join(FOLD_DATA_DIR, "train_inner.csv"))
+XX_test        = _load_matrix_csv(os.path.join(FOLD_DATA_DIR, "test.csv"))
+print(f"  train_full : {XX_train_full.shape}")
+print(f"  train_inner: {XX_train_inner.shape}")
+print(f"  test       : {XX_test.shape}\n")
+
+# ── 3. Lambda별 최적 alpha 선택 ───────────────────────────────────────────────
+print(f"[ALPHA SELECTION] {len(LAMBDA_VALUES)} lambda values")
+lambda_selections = {}   # lam -> DataFrame (best per method/K/TopN)
+
+for lam in LAMBDA_VALUES:
+    df_history["_score"] = df_history["mse"] + lam * (df_history["alpha"] - 1.0).abs()
+    best_idx = df_history.groupby(["method", "K", "TopN"])["_score"].idxmin()
+    best_df  = df_history.loc[best_idx].copy()
+    best_df["lambda"] = lam
+    lambda_selections[lam] = best_df
+    # method/K 고유 alpha 평균 (TopN은 alpha 선택에 영향 없음)
+    avg_a = best_df.groupby(["method", "K"])["alpha"].first().mean()
+    print(f"  lambda={lam:.3f} -> avg_alpha={avg_a:.3f}")
+
+# ── 4. 고유 (method, K, alpha) 집합 수집 ─────────────────────────────────────
+needed = set()
+for lam, best_df in lambda_selections.items():
+    for _, row in best_df[["method", "K", "alpha"]].drop_duplicates().iterrows():
+        needed.add((row["method"], int(row["K"]), float(row["alpha"])))
+
+# baseline alpha=1 항상 포함
+for method in df_history["method"].unique():
+    for k in df_history["K"].unique():
+        needed.add((method, int(k), 1.0))
+
+tasks = sorted(needed)
+print(f"\n[CACHE] {len(tasks)} unique (method, K, alpha) → test prediction\n")
+
+# ── 5. Test 예측 캐시 구축 ────────────────────────────────────────────────────
+print("[EVAL] Running test predictions (sim_inner)...")
+loaded_sims = {}
+eval_cache  = {}   # (method, K, alpha) -> {pred_df, test_rmse, test_mad}
+
+for idx, (method, k, alpha) in enumerate(tasks):
+    if idx % 20 == 0:
+        pct = 100 * idx / len(tasks)
+        print(f"  {idx}/{len(tasks)} ({pct:.0f}%)", end="\r", flush=True)
+
+    if method not in loaded_sims:
+        sim_path = os.path.join(FOLD_DATA_DIR, f"sim_inner_{method}.npy")
+        if not os.path.exists(sim_path):
+            print(f"\n  WARNING: {sim_path} not found - skip {method}")
+            continue
+        loaded_sims[method] = np.load(sim_path)
+
+    S_alpha = _combine_single_similarity(loaded_sims[method], alpha)
+    preds_dict, _ = _knn_predict_removed_with_S(
+        X=XX_test.values, XX=XX_train_full.values, S=S_alpha, K=k)
+
+    pred_df = XX_test.copy(); pred_df[:] = np.nan
+    for (ii, jj), v in preds_dict.items():
+        pred_df.iloc[ii, jj] = v
+
+    test_rmse, test_mad = rmse_mad_on_test(pred_df, XX_test)
+    eval_cache[(method, k, alpha)] = {
+        "pred_df":   pred_df,
+        "test_rmse": test_rmse,
+        "test_mad":  test_mad,
+    }
+
+print(f"\n  {len(eval_cache)} predictions cached.\n")
+
+# ── 6. Lambda별 결과 조립 및 저장 ─────────────────────────────────────────────
+print("[ASSEMBLE] Building per-lambda result files...")
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+for lam in LAMBDA_VALUES:
+    best_df = lambda_selections[lam]
+    results = []
+
+    # optimized rows
+    for (method, k, alpha), grp in best_df.groupby(["method", "K", "alpha"]):
+        k = int(k); alpha = float(alpha)
+        key = (method, k, alpha)
+        if key not in eval_cache:
+            continue
+        cached    = eval_cache[key]
+        pred_df   = cached["pred_df"]
+        test_rmse = cached["test_rmse"]
+        test_mad  = cached["test_mad"]
+
+        for topn in TOPN_RANGE:
+            hist_row = df_history[
+                (df_history["method"] == method) &
+                (df_history["K"]      == k) &
+                (df_history["TopN"]   == topn) &
+                (df_history["alpha"].round(6) == round(alpha, 6))
+            ]
+            if hist_row.empty:
+                continue
+            hr = hist_row.iloc[0]
+            reg_penalty = lam * abs(alpha - 1.0)
+
+            test_prec, test_rec = precision_recall_at_n(
+                pred_df, XX_train_full, XX_test, topn, RELEVANCE_THRESHOLD)
+
+            results.append({
+                "fold": FOLD_NUM, "method": method, "alpha": alpha,
+                "type": "optimized", "K": k, "TopN": topn,
+                "validation_mse":       hr["mse"],
+                "validation_rmse":      hr["rmse"],
+                "validation_precision": hr.get("precision", np.nan),
+                "validation_recall":    hr.get("recall",    np.nan),
+                "regularization_penalty": reg_penalty,
+                "regularized_score":    hr["mse"] + reg_penalty,
+                "test_RMSE":      test_rmse,
+                "test_MAD":       test_mad,
+                "test_Precision": test_prec,
+                "test_Recall":    test_rec,
+                "lambda": lam,
+            })
+
+    # baseline (alpha=1) rows
+    for method in df_history["method"].unique():
+        for k in [int(kk) for kk in df_history["K"].unique()]:
+            key = (method, k, 1.0)
+            if key not in eval_cache:
+                continue
+            cached    = eval_cache[key]
+            pred_df   = cached["pred_df"]
+            test_rmse = cached["test_rmse"]
+            test_mad  = cached["test_mad"]
+            for topn in TOPN_RANGE:
+                test_prec, test_rec = precision_recall_at_n(
+                    pred_df, XX_train_full, XX_test, topn, RELEVANCE_THRESHOLD)
+                results.append({
+                    "fold": FOLD_NUM, "method": method, "alpha": 1.0,
+                    "type": "baseline", "K": k, "TopN": topn,
+                    "validation_mse": np.nan, "validation_rmse": np.nan,
+                    "validation_precision": np.nan, "validation_recall": np.nan,
+                    "regularization_penalty": 0.0, "regularized_score": np.nan,
+                    "test_RMSE":      test_rmse,
+                    "test_MAD":       test_mad,
+                    "test_Precision": test_prec,
+                    "test_Recall":    test_rec,
+                    "lambda": lam,
+                })
+
+    if results:
+        out_path = os.path.join(
+            FOLD_RES_DIR,
+            f"grid_search_results_inner_lambda_{lam}_v1_{timestamp}.csv")
+        df_out = pd.DataFrame(results)
+        df_out.to_csv(out_path, index=False)
+
+        opt = df_out[df_out["type"] == "optimized"]
+        avg_a    = opt["alpha"].mean()
+        avg_rmse = opt["test_RMSE"].mean()
+        print(f"  lambda={lam:.3f}: avg_alpha={avg_a:.3f} | avg_test_RMSE={avg_rmse:.4f} "
+              f"| {len(df_out)} rows -> {os.path.basename(out_path)}")
+
+# ── 완료 ──────────────────────────────────────────────────────────────────────
+elapsed = time.time() - global_start
+print(f"\n{'='*70}")
+print(f"  DONE  Total: {elapsed:.1f}s  ({elapsed/60:.1f} min)")
+print(f"  End  : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+print(f"  Output: results/inner_sim/fold_01/")
+print(f"{'='*70}")

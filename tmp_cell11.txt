@@ -1,0 +1,63 @@
+def _combine_single_similarity(S, alpha, clip_neg=True):
+    """Apply alpha exponent to similarity matrix."""
+    S = np.asarray(S, dtype=float)
+    S_eff = np.clip(S, 0.0, None) if clip_neg else S
+    S_eff = np.power(S_eff, float(alpha))
+    np.fill_diagonal(S_eff, 0.0)
+    return S_eff
+
+
+def rmse_mad_on_test(pred: pd.DataFrame, test: pd.DataFrame) -> Tuple[float, float]:
+    """Calculate RMSE and MAD on test set."""
+    P = pred.values
+    T = test.values
+    mask = ~np.isnan(T)
+    if not mask.any():
+        return np.nan, np.nan
+    diff = P[mask] - T[mask]
+    rmse = float(np.sqrt(np.mean(diff**2)))
+    mad = float(np.mean(np.abs(diff)))
+    return rmse, mad
+
+
+def precision_recall_at_n(
+    pred: pd.DataFrame, train: pd.DataFrame, test: pd.DataFrame,
+    N: int, relevance_threshold: float = 4.0
+) -> Tuple[float, float]:
+    """
+    Calculate Precision@N and Recall@N.
+    Candidate items: not in train & observed in test
+    Relevant items: test rating >= relevance_threshold
+    """
+    precisions, recalls = [], []
+    
+    for u_idx in range(pred.shape[1]):
+        train_col = train.iloc[:, u_idx]
+        test_col = test.iloc[:, u_idx]
+        pred_col = pred.iloc[:, u_idx]
+        
+        cand_mask = train_col.isna() & ~test_col.isna()
+        if not cand_mask.any():
+            continue
+        
+        relevant_mask = (test_col >= relevance_threshold) & cand_mask
+        n_rel = int(relevant_mask.sum())
+        
+        scores = pred_col[cand_mask]
+        topN_items = scores.sort_values(ascending=False).head(N).index
+        
+        n_hit = int(relevant_mask.loc[topN_items].sum()) if len(topN_items) else 0
+        
+        prec_u = n_hit / min(N, int(cand_mask.sum())) if int(cand_mask.sum()) > 0 else np.nan
+        rec_u = n_hit / n_rel if n_rel > 0 else np.nan
+        
+        if not np.isnan(prec_u): 
+            precisions.append(prec_u)
+        if not np.isnan(rec_u):  
+            recalls.append(rec_u)
+    
+    precision = float(np.mean(precisions)) if precisions else np.nan
+    recall = float(np.mean(recalls)) if recalls else np.nan
+    return precision, recall
+
+print("✅ Metrics calculation functions defined")

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "D:\Dropbox\python_workspace(¹é¾÷)\imputation_project\list_buggy_files.py", line 35, in <module>
+    print(f"  [{buggy:5d}/{total:5d} rows]  {fpath}")
+UnicodeEncodeError: 'cp949' codec can't encode character '\u20a9' in position 38: illegal multibyte sequence

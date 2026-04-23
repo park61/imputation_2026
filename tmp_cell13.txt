@@ -1,0 +1,542 @@
+print(f"\n{'='*80}")
+print(f"STARTING MULTI-FOLD GRID SEARCH EXPERIMENT (INCREMENTAL MODE)")
+print(f"{'='*80}")
+print(f"Folds to process: {FOLDS_TO_RUN}")
+print(f"Total folds: {len(FOLDS_TO_RUN)}")
+
+# Global tracking
+global_start_time = time.time()
+all_folds_results = []
+all_folds_alpha_history = []
+
+for fold_num in FOLDS_TO_RUN:
+    fold_id = f"fold_{fold_num:02d}"
+    FOLD_DIR = f"../data/movielenz_data/{fold_id}"
+    TRAIN_INNER_CSV = os.path.join(FOLD_DIR, "train_inner.csv")  # V2: Changed from train.csv
+    VALIDATION_CSV = os.path.join(FOLD_DIR, "validation.csv")    # V2: Added validation
+    TRAIN_CSV = os.path.join(FOLD_DIR, "train.csv")              # V2: For final evaluation
+    TEST_CSV = os.path.join(FOLD_DIR, "test.csv")
+    RESULTS_DIR = os.path.join("../results", fold_id)
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+    
+    print(f"\n{'='*80}")
+    print(f"FOLD {fold_num:02d} / {len(FOLDS_TO_RUN)}")
+    print(f"{'='*80}")
+    print(f"Directory: {FOLD_DIR}")
+    
+    # Check if fold exists (V2: Check for train_inner and validation)
+    if not os.path.exists(TRAIN_INNER_CSV) or not os.path.exists(VALIDATION_CSV) or not os.path.exists(TEST_CSV):
+        print(f"⚠️  Skipping {fold_id}: Required data files not found")
+        print(f"     Run create_train_validation_split_0113.ipynb first!")
+        continue
+    
+    # ========================================
+    # INCREMENTAL STRATEGY: Detect new methods
+    # ========================================
+    methods_to_run = METHODS_TO_TEST.copy()
+    merge_mode = False
+    existing_results_file = None
+    
+    if AUTO_MERGE_WITH_EXISTING:
+        existing_results_file = get_latest_result_file(RESULTS_DIR, 'grid_search_results_')
+        
+        if existing_results_file:
+            print(f"\n📂 Found existing results: {os.path.basename(existing_results_file)}")
+            
+            # Validate experimental conditions
+            is_valid, error_msg = validate_experimental_consistency(
+                existing_file=existing_results_file,
+                new_K_range=K_RANGE,
+                new_TopN_range=TOPN_RANGE,
+                new_alpha_coarse=ALPHA_COARSE_GRID,
+                new_alpha_fine_radius=ALPHA_FINE_RADIUS,
+                new_alpha_fine_step=ALPHA_FINE_STEP,
+                new_relevance_threshold=RELEVANCE_THRESHOLD
+            )
+            
+            if not is_valid:
+                print(f"\n{'='*80}")
+                print(f"❌ EXPERIMENTAL CONDITION MISMATCH")
+                print(f"{'='*80}")
+                print(error_msg)
+                print(f"\n⚠️  Cannot merge with existing results due to incompatible settings.")
+                print(f"Options:")
+                print(f"  1. Update your configuration to match existing experiments")
+                print(f"  2. Set AUTO_MERGE_WITH_EXISTING = False to start fresh")
+                print(f"  3. Delete existing results if you want to change experimental conditions")
+                print(f"\nSkipping {fold_id}")
+                continue
+            
+            print(f"✅ Experimental conditions validated - compatible with existing results")
+            
+            # Get new methods if requested
+            if RUN_ONLY_NEW_METHODS:
+                new_methods = get_new_methods(METHODS_TO_TEST, existing_results_file)
+                
+                if not new_methods:
+                    print(f"✅ All requested methods already exist in results - skipping {fold_id}")
+                    continue
+                
+                existing_conditions = get_experimental_conditions_from_file(existing_results_file)
+                print(f"\n🔍 Method Detection:")
+                print(f"  Existing methods: {existing_conditions['methods']}")
+                print(f"  Requested methods: {METHODS_TO_TEST}")
+                print(f"  New methods to run: {new_methods}")
+                
+                methods_to_run = new_methods
+                merge_mode = True
+            else:
+                print(f"ℹ️  RUN_ONLY_NEW_METHODS disabled - will run all requested methods")
+                merge_mode = True
+        else:
+            print(f"ℹ️  No existing results found - will run all methods from scratch")
+    
+    # Load data (V2: Load train_inner, validation, and test)
+    print(f"\nLoading data from: {FOLD_DIR}")
+    XX_train_inner = _load_matrix_csv(TRAIN_INNER_CSV)  # V2: For α optimization learning
+    XX_validation = _load_matrix_csv(VALIDATION_CSV)    # V2: For α optimization evaluation
+    XX_train_full = _load_matrix_csv(TRAIN_CSV)         # V2: For final evaluation
+    XX_test = _load_matrix_csv(TEST_CSV)                # V2: For final evaluation ONLY
+    
+    print(f"✓ Train_inner data: {XX_train_inner.shape} (items × users)")
+    print(f"  Observed ratings: {(~XX_train_inner.isna()).sum().sum():,}")
+    print(f"✓ Validation data: {XX_validation.shape} (items × users)")
+    print(f"  Observed ratings: {(~XX_validation.isna()).sum().sum():,}")
+    print(f"✓ Train_full data: {XX_train_full.shape} (items × users)")
+    print(f"  Observed ratings: {(~XX_train_full.isna()).sum().sum():,}")
+    print(f"✓ Test data: {XX_test.shape} (items × users)")
+    print(f"  Observed ratings: {(~XX_test.isna()).sum().sum():,}")
+    
+    # Run grid search for this fold
+    print(f"\n{'='*80}")
+    print(f"GRID SEARCH WITH ALPHA OPTIMIZATION - {fold_id.upper()} (V2: NO TEST LEAKAGE)")
+    print(f"{'='*80}")
+    print(f"Methods to run: {methods_to_run}")
+    
+    all_results = []
+    ALPHA_HISTORY = []
+    total_experiments = len(methods_to_run) * len(K_RANGE) * len(TOPN_RANGE)
+    completed = 0
+    fold_start_time = time.time()
+    
+    for method in methods_to_run:
+        # Load similarity matrix
+        sim_file = os.path.join(FOLD_DIR, f"sim_{method}.npy")
+        
+        if not os.path.exists(sim_file):
+            print(f"⚠️  Skipping {method}: similarity file not found in {fold_id}")
+            continue
+        
+        S_user = np.load(sim_file)
+        
+        print(f"\n[{method.upper()}]")
+        
+        for k in K_RANGE:
+            # ========================================
+            # PHASE 1: ALPHA OPTIMIZATION (VALIDATION DATA)
+            # ========================================
+            # Purpose: Find optimal α using VALIDATION set
+            # Data: train_inner (learning) + validation (evaluation)
+            # ⚠️ TEST DATA NEVER USED IN THIS PHASE
+            # ========================================
+            
+            print(f"  K={k}: Optimizing alpha (validation + regularization)...", end=' ')
+            
+            # Phase 1: Coarse search WITH REGULARIZATION
+            best_coarse_alpha = None
+            best_coarse_score = np.inf  # Changed from mse to score
+            
+            for alpha in ALPHA_COARSE_GRID:
+                S_alpha = _combine_single_similarity(S_user, alpha, clip_neg=True)
+                # V2: Changed to use train_inner → validation (NOT test!)
+                preds_dict, mse = _knn_predict_removed_with_S(
+                    X=XX_validation.values,      # V2: Validation as ground truth
+                    XX=XX_train_inner.values,    # V2: Train_inner for learning
+                    S=S_alpha,
+                    K=k,
+                    include_negative=False,
+                    fallback="user_mean"
+                )
+                
+                # V3: Apply regularization penalty
+                regularization_penalty = REGULARIZATION_LAMBDA * abs(alpha - 1.0)
+                regularized_score = mse + regularization_penalty
+                
+                # Convert predictions to DataFrame for Precision/Recall calculation
+                pred_df = XX_validation.copy()  # V2: Changed from XX_test
+                pred_df[:] = np.nan
+                for (item_idx, user_idx), pred_rating in preds_dict.items():
+                    pred_df.iloc[item_idx, user_idx] = pred_rating
+                
+                # Calculate Precision/Recall for ALL TopN values
+                for topn in TOPN_RANGE:
+                    precision, recall = precision_recall_at_n(
+                        pred=pred_df,
+                        train=XX_train_inner,        # V2: Changed from XX_train
+                        test=XX_validation,          # V2: Changed from XX_test
+                        N=topn,
+                        relevance_threshold=RELEVANCE_THRESHOLD
+                    )
+                    
+                    ALPHA_HISTORY.append({
+                        'fold': fold_num,
+                        'method': method,
+                        'K': k,
+                        'TopN': topn,  # Added TopN column
+                        'phase': 'coarse',
+                        'alpha': alpha,
+                        'mse': mse,
+                        'rmse': np.sqrt(mse),
+                        'regularization_penalty': regularization_penalty,  # V3: Track penalty
+                        'regularized_score': regularized_score,             # V3: Track total score
+                        'precision': precision,
+                        'recall': recall
+                    })
+                
+                # V3: Use regularized score for selection
+                if regularized_score < best_coarse_score:
+                    best_coarse_score = regularized_score
+                    best_coarse_alpha = alpha
+            
+            # Phase 2: Fine search WITH REGULARIZATION
+            fine_start = max(0.0, best_coarse_alpha - ALPHA_FINE_RADIUS)
+            fine_end = min(3.0, best_coarse_alpha + ALPHA_FINE_RADIUS)  # V3: Cap at 3.0
+            fine_grid = np.arange(fine_start, fine_end + ALPHA_FINE_STEP/2, ALPHA_FINE_STEP)
+            
+            best_fine_alpha = best_coarse_alpha
+            best_fine_score = best_coarse_score  # Changed from mse to score
+            
+            for alpha in fine_grid:
+                S_alpha = _combine_single_similarity(S_user, alpha, clip_neg=True)
+                # V2: Changed to use train_inner → validation (NOT test!)
+                preds_dict, mse = _knn_predict_removed_with_S(
+                    X=XX_validation.values,      # V2: Validation as ground truth
+                    XX=XX_train_inner.values,    # V2: Train_inner for learning
+                    S=S_alpha,
+                    K=k,
+                    include_negative=False,
+                    fallback="user_mean"
+                )
+                
+                # V3: Apply regularization penalty
+                regularization_penalty = REGULARIZATION_LAMBDA * abs(alpha - 1.0)
+                regularized_score = mse + regularization_penalty
+                
+                # Convert predictions to DataFrame for Precision/Recall calculation
+                pred_df = XX_validation.copy()  # V2: Changed from XX_test
+                pred_df[:] = np.nan
+                for (item_idx, user_idx), pred_rating in preds_dict.items():
+                    pred_df.iloc[item_idx, user_idx] = pred_rating
+                
+                # Calculate Precision/Recall for ALL TopN values
+                for topn in TOPN_RANGE:
+                    precision, recall = precision_recall_at_n(
+                        pred=pred_df,
+                        train=XX_train_inner,        # V2: Changed from XX_train
+                        test=XX_validation,          # V2: Changed from XX_test
+                        N=topn,
+                        relevance_threshold=RELEVANCE_THRESHOLD
+                    )
+                    
+                    ALPHA_HISTORY.append({
+                        'fold': fold_num,
+                        'method': method,
+                        'K': k,
+                        'TopN': topn,  # Added TopN column
+                        'phase': 'fine',
+                        'alpha': alpha,
+                        'mse': mse,
+                        'rmse': np.sqrt(mse),
+                        'regularization_penalty': regularization_penalty,  # V3: Track penalty
+                        'regularized_score': regularized_score,             # V3: Track total score
+                        'precision': precision,
+                        'recall': recall
+                    })
+                
+                # V3: Use regularized score for selection
+                if regularized_score < best_fine_score:
+                    best_fine_score = regularized_score
+                    best_fine_alpha = alpha
+            
+            optimal_alpha = best_fine_alpha
+            print(f"α={optimal_alpha:.2f} (regularized) | Evaluating on test...", end=' ')
+            
+            # ========================================
+            # PHASE 2: FINAL TEST EVALUATION (TEST DATA)
+            # ========================================
+            # Purpose: Fair comparison of optimal α vs α=1.0
+            # Data: train_full (learning) + test (evaluation)
+            # ✅ FIRST AND ONLY USE OF TEST DATA
+            # ✅ BOTH optimal α AND α=1.0 USE SAME TEST SET
+            # ========================================
+            
+            # 1. Optimal Alpha Evaluation
+            S_alpha = _combine_single_similarity(S_user, optimal_alpha, clip_neg=True)
+            preds_dict, _ = _knn_predict_removed_with_S(
+                X=XX_test.values,           # V2: Test (first use!)
+                XX=XX_train_full.values,    # V2: Full train for learning
+                S=S_alpha,
+                K=k,
+                include_negative=False,
+                fallback="user_mean"
+            )
+            
+            # Convert to DataFrame
+            pred_df = XX_test.copy()
+            pred_df[:] = np.nan
+            for (item_idx, user_idx), pred_rating in preds_dict.items():
+                pred_df.iloc[item_idx, user_idx] = pred_rating
+            
+            # Calculate TEST RMSE and MAD (independent of TopN)
+            test_rmse, test_mad = rmse_mad_on_test(pred_df, XX_test)
+            
+            # V4: Find VALIDATION metrics for selected alpha from history
+            # This is the performance that was used to select optimal_alpha
+            val_metrics_for_alpha = {}
+            for topn in TOPN_RANGE:
+                hist_match = [h for h in ALPHA_HISTORY if 
+                             h['method'] == method and h['K'] == k and 
+                             h['TopN'] == topn and h['alpha'] == optimal_alpha]
+                if hist_match:
+                    val_metrics_for_alpha[topn] = hist_match[-1]  # Take last (fine search)
+            
+            # Calculate TEST metrics for all TopN values
+            for topn in TOPN_RANGE:
+                test_precision, test_recall = precision_recall_at_n(
+                    pred=pred_df,
+                    train=XX_train_full,     # V2: Full train
+                    test=XX_test,            # V2: Test
+                    N=topn,
+                    relevance_threshold=RELEVANCE_THRESHOLD
+                )
+                
+                # V4: Get validation metrics for this TopN
+                val_metrics = val_metrics_for_alpha.get(topn, {})
+                
+                all_results.append({
+                    'fold': fold_num,
+                    'method': method,
+                    'alpha': optimal_alpha,
+                    'type': 'optimized',
+                    'K': k,
+                    'TopN': topn,
+                    # V4: VALIDATION metrics (alpha selection basis)
+                    'validation_mse': val_metrics.get('mse', np.nan),
+                    'validation_rmse': val_metrics.get('rmse', np.nan),
+                    'validation_precision': val_metrics.get('precision', np.nan),
+                    'validation_recall': val_metrics.get('recall', np.nan),
+                    'regularization_penalty': val_metrics.get('regularization_penalty', np.nan),
+                    'regularized_score': val_metrics.get('regularized_score', np.nan),
+                    # V4: TEST metrics (generalization evaluation)
+                    'test_RMSE': test_rmse,
+                    'test_MAD': test_mad,
+                    'test_Precision': test_precision,
+                    'test_Recall': test_recall,
+                    # Legacy columns for backward compatibility
+                    'RMSE': test_rmse,
+                    'MAD': test_mad,
+                    'Precision': test_precision,
+                    'Recall': test_recall
+                })
+                
+                completed += 1
+
+            # 2. Baseline Alpha (α=1.0) Evaluation
+            # Evaluate standard similarity without optimization (alpha=1.0)
+            S_one = _combine_single_similarity(S_user, 1.0, clip_neg=True)
+            preds_dict_one, _ = _knn_predict_removed_with_S(
+                X=XX_test.values,
+                XX=XX_train_full.values,
+                S=S_one,
+                K=k,
+                include_negative=False,
+                fallback="user_mean"
+            )
+
+            # Convert to DataFrame
+            pred_df_one = XX_test.copy()
+            pred_df_one[:] = np.nan
+            for (item_idx, user_idx), pred_rating in preds_dict_one.items():
+                pred_df_one.iloc[item_idx, user_idx] = pred_rating
+                
+            test_rmse_baseline, test_mad_baseline = rmse_mad_on_test(pred_df_one, XX_test)
+            
+            for topn in TOPN_RANGE:
+                test_precision_baseline, test_recall_baseline = precision_recall_at_n(
+                    pred=pred_df_one,
+                    train=XX_train_full,
+                    test=XX_test,
+                    N=topn,
+                    relevance_threshold=RELEVANCE_THRESHOLD
+                )
+                
+                # V4: For baseline, validation metrics are NaN (no validation-based selection)
+                all_results.append({
+                    'fold': fold_num,
+                    'method': method,
+                    'alpha': 1.0,
+                    'type': 'baseline',
+                    'K': k,
+                    'TopN': topn,
+                    # V4: Baseline doesn't use validation for selection
+                    'validation_mse': np.nan,
+                    'validation_rmse': np.nan,
+                    'validation_precision': np.nan,
+                    'validation_recall': np.nan,
+                    'regularization_penalty': 0.0,  # No penalty for baseline
+                    'regularized_score': np.nan,
+                    # V4: TEST metrics
+                    'test_RMSE': test_rmse_baseline,
+                    'test_MAD': test_mad_baseline,
+                    'test_Precision': test_precision_baseline,
+                    'test_Recall': test_recall_baseline,
+                    # Legacy columns
+                    'RMSE': test_rmse_baseline,
+                    'MAD': test_mad_baseline,
+                    'Precision': test_precision_baseline,
+                    'Recall': test_recall_baseline
+                })
+            
+            # Progress update
+            elapsed = time.time() - fold_start_time
+            progress = (completed / total_experiments) * 100
+            eta = (elapsed / completed) * (total_experiments - completed) if completed > 0 else 0
+            print(f"| {progress:5.1f}% | ETA: {eta/60:.1f}min")
+    
+    # ========================================
+    # SAVE RESULTS (with merge if applicable)
+    # ========================================
+    fold_time = time.time() - fold_start_time
+    results_df = pd.DataFrame(all_results)
+    alpha_history_df = pd.DataFrame(ALPHA_HISTORY)
+    
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # Handle merge mode
+    if merge_mode and existing_results_file:
+        print(f"\n{'='*80}")
+        print(f"MERGING RESULTS")
+        print(f"{'='*80}")
+        
+        output_file = os.path.join(RESULTS_DIR, f"grid_search_results_{timestamp}.csv")
+        alpha_file = os.path.join(RESULTS_DIR, f"alpha_optimization_history_{timestamp}.csv")
+        
+        # Merge grid search results
+        merge_stats = merge_results(
+            new_results_df=results_df,
+            existing_file=existing_results_file,
+            output_file=output_file,
+            create_backup=CREATE_BACKUP
+        )
+        
+        # For alpha history, we'll merge similarly
+        existing_alpha_file = get_latest_result_file(RESULTS_DIR, 'alpha_optimization_history_')
+        if existing_alpha_file:
+            existing_alpha_df = pd.read_csv(existing_alpha_file)
+            
+            # Remove existing (fold, method, K) combinations
+            new_alpha_keys = alpha_history_df[['fold', 'method', 'K']].drop_duplicates()
+            merged_alpha_df = existing_alpha_df.copy()
+            for _, row in new_alpha_keys.iterrows():
+                mask = (merged_alpha_df['fold'] == row['fold']) & \
+                       (merged_alpha_df['method'] == row['method']) & \
+                       (merged_alpha_df['K'] == row['K'])
+                merged_alpha_df = merged_alpha_df[~mask]
+            
+            merged_alpha_df = pd.concat([merged_alpha_df, alpha_history_df], ignore_index=True)
+            merged_alpha_df = merged_alpha_df.sort_values(['fold', 'method', 'K', 'phase', 'alpha']).reset_index(drop=True)
+            merged_alpha_df.to_csv(alpha_file, index=False)
+            
+            if CREATE_BACKUP:
+                alpha_backup = existing_alpha_file.replace('.csv', '_backup.csv')
+                shutil.copy2(existing_alpha_file, alpha_backup)
+        else:
+            alpha_history_df.to_csv(alpha_file, index=False)
+        
+        # Save metadata
+        experimental_conditions = {
+            'K_RANGE': list(K_RANGE),
+            'TOPN_RANGE': TOPN_RANGE,
+            'ALPHA_COARSE_GRID': list(ALPHA_COARSE_GRID),
+            'ALPHA_FINE_RADIUS': ALPHA_FINE_RADIUS,
+            'ALPHA_FINE_STEP': ALPHA_FINE_STEP,
+            'ALPHA_SEARCH_TOPN': ALPHA_SEARCH_TOPN,
+            'RELEVANCE_THRESHOLD': RELEVANCE_THRESHOLD,
+            'methods_requested': METHODS_TO_TEST,
+            'methods_run': methods_to_run
+        }
+        
+        metadata_file = save_merge_metadata(
+            results_dir=RESULTS_DIR,
+            merge_stats=merge_stats,
+            experimental_conditions=experimental_conditions,
+            timestamp=timestamp
+        )
+        
+        print(f"\n📊 Merge Statistics:")
+        print(f"  Existing rows: {merge_stats['existing_rows']:,}")
+        print(f"  Existing methods: {merge_stats['existing_methods']}")
+        print(f"  New rows: {merge_stats['new_rows']:,}")
+        print(f"  New methods: {merge_stats['new_methods']}")
+        print(f"  Merged rows: {merge_stats['merged_rows']:,}")
+        print(f"  Merged methods: {merge_stats['merged_methods']}")
+        if merge_stats['backup_file']:
+            print(f"  Backup: {os.path.basename(merge_stats['backup_file'])}")
+        
+    else:
+        # No merge - save as new files
+        output_file = os.path.join(RESULTS_DIR, f"grid_search_results_{timestamp}.csv")
+        alpha_file = os.path.join(RESULTS_DIR, f"alpha_optimization_history_{timestamp}.csv")
+        
+        results_df.to_csv(output_file, index=False)
+        alpha_history_df.to_csv(alpha_file, index=False)
+    
+    print(f"\n{'='*80}")
+    print(f"✅ {fold_id.upper()} COMPLETE")
+    print(f"{'='*80}")
+    print(f"Experiments: {completed}")
+    print(f"Time: {fold_time:.1f}s ({fold_time/60:.1f} min)")
+    print(f"Average: {fold_time/completed:.2f}s per experiment")
+    print(f"Alpha evaluations: {len(ALPHA_HISTORY)}")
+    print(f"\n💾 Saved:")
+    print(f"  {output_file}")
+    print(f"  {alpha_file}")
+    if merge_mode:
+        print(f"  {metadata_file}")
+    
+    # Add to global tracking
+    all_folds_results.extend(all_results)
+    all_folds_alpha_history.extend(ALPHA_HISTORY)
+
+# Global summary
+global_time = time.time() - global_start_time
+print(f"\n{'='*80}")
+print(f"🎉 ALL FOLDS COMPLETE")
+print(f"{'='*80}")
+print(f"Folds processed: {len(FOLDS_TO_RUN)}")
+print(f"Total experiments: {len(all_folds_results)}")
+print(f"Total time: {global_time:.1f}s ({global_time/60:.1f} min, {global_time/3600:.2f} hours)")
+if len(FOLDS_TO_RUN) > 0:
+    print(f"Average per fold: {global_time/len(FOLDS_TO_RUN)/60:.1f} min")
+
+# Save combined results
+if all_folds_results:
+    combined_results_df = pd.DataFrame(all_folds_results)
+    combined_alpha_df = pd.DataFrame(all_folds_alpha_history)
+
+    combined_dir = "../results/combined"
+    os.makedirs(combined_dir, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    combined_output = os.path.join(combined_dir, f"all_folds_grid_results_{timestamp}.csv")
+    combined_alpha = os.path.join(combined_dir, f"all_folds_alpha_history_{timestamp}.csv")
+
+    combined_results_df.to_csv(combined_output, index=False)
+    combined_alpha_df.to_csv(combined_alpha, index=False)
+
+    print(f"\n💾 Combined results saved:")
+
+    print(f"  {combined_output}")
+    print(f"  {combined_output}")    
+    print(f"  {combined_alpha}")
+    print(f"  {combined_alpha}")

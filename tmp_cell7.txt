@@ -1,0 +1,52 @@
+def _load_matrix_csv(path: str) -> pd.DataFrame:
+    """
+    Load CSV file as (items × users) rating matrix.
+    
+    CRITICAL FIX (Nov 11, 2025):
+    - Converts index/columns to int BEFORE sorting to ensure numerical order
+    - Prevents alphabetical sorting bug (1, 10, 100 vs 1, 2, 3, ...)
+    """
+    df = pd.read_csv(path, low_memory=False)
+
+    # Check if it's triple format
+    lower = [str(c).lower() for c in df.columns]
+    if {"item", "user", "rating"}.issubset(lower):
+        def col(name):
+            for c in df.columns:
+                if str(c).lower() == name:
+                    return c
+            raise KeyError(name)
+        
+        i, u, r = col("item"), col("user"), col("rating")
+        mat = df.pivot(index=i, columns=u, values=r)
+        mat = mat.apply(pd.to_numeric, errors="coerce")
+        
+        # FIX: Convert to int BEFORE sorting
+        mat.index = mat.index.astype(int)
+        mat.columns = mat.columns.astype(int)
+        mat = mat.sort_index().sort_index(axis=1)
+        
+        return mat
+
+    # Otherwise assume matrix format
+    first_col = df.columns[0]
+    
+    # Check if first column should be index
+    if str(first_col).lower() in ("item", "items", "item_id", "id", "index", "unnamed: 0"):
+        df = df.set_index(first_col)
+    
+    # Clear index/column names
+    df.index.name = None
+    df.columns.name = None
+
+    # Convert to numeric
+    df = df.apply(pd.to_numeric, errors="coerce")
+
+    # FIX: Convert to int BEFORE sorting
+    df.index = df.index.astype(int)
+    df.columns = df.columns.astype(int)
+    df = df.sort_index().sort_index(axis=1)
+    
+    return df
+
+print("✅ Data loading function defined")

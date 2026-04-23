@@ -1,0 +1,8 @@
+\beamer@sectionintoc {1}{연구 배경}{3}{0}{1}
+\beamer@sectionintoc {2}{Toy Example 설정}{4}{0}{2}
+\beamer@sectionintoc {3}{Step 1: 유사도 계산}{6}{0}{3}
+\beamer@sectionintoc {4}{Step 2: $\alpha $-변환}{8}{0}{4}
+\beamer@sectionintoc {5}{Step 3: KNN 예측}{9}{0}{5}
+\beamer@sectionintoc {6}{Step 4: $\alpha $ 최적화}{11}{0}{6}
+\beamer@sectionintoc {7}{전체 실험 결과}{13}{0}{7}
+\beamer@sectionintoc {8}{결론 및 향후 연구}{15}{0}{8}

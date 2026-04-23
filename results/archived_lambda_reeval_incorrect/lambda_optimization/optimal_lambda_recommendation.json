@@ -1,0 +1,10 @@
+{
+  "analysis_timestamp": "2026-01-23 11:23:23",
+  "best_rmse_lambda": 0.03,
+  "best_rmse_value": 1.011311,
+  "best_rmse_std": 0.023503,
+  "recommended_lambda": 0.03,
+  "recommended_rmse": 1.011311,
+  "baseline_rmse": 1.026638,
+  "improvement_pct": 1.4929312961335806
+}
