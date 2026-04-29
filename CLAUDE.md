@@ -170,12 +170,19 @@ data/movielenz_data/
 
 ### Alpha와 Recall의 관계 (중요)
 
-**$\hat{r}(u,i) = \bar{r}_u + \alpha \cdot CF(u,i)$ 이므로**:
+본 실험의 예측 공식은 다음과 같다:
 
-$$\hat{r}(u,i) > \hat{r}(u,j) \iff CF(u,i) > CF(u,j) \quad \text{for any } \alpha > 0$$
+$$\hat{r}(u, i) = \frac{\sum_{v \in \mathcal{N}_K(u,i)} S_{\text{eff}}(u,v) \cdot r(v,i)}{\sum_{v \in \mathcal{N}_K(u,i)} S_{\text{eff}}(u,v)}, \quad S_{\text{eff}}(u,v) = \max(S(u,v),\, 0)^{\alpha}$$
 
-→ **alpha 값이 달라도 추천 순위는 불변** → baseline(α=1)과 optimized(α=α*)의 Recall/Precision은 항상 동일  
-→ 이 실험에서 baseline vs optimized 비교는 의미 없음 (스키마 일관성을 위해 양쪽 모두 저장)  
+α는 CF 항에 곱해지는 스케일이 아니라, **유사도에 붙는 지수(power exponent)**다.
+
+α가 바뀌면 $S_{\text{eff}}$의 분포와 이웃 집합 $\mathcal{N}_K(u,i)$가 달라지므로, 아이템 간 랭킹이 수학적으로 보존된다는 보장은 없다.
+
+실험에서 baseline(α=1)과 optimized(α=α*)의 Recall이 동일하게 나오는 이유는 두 가지 가능성이 있다:
+- **경험적 안정성**: 대부분의 경우 α 변화가 상위 K 이웃 구성과 아이템 간 순위를 실질적으로 바꾸지 않음
+- **Closed-World 구조적 한계**: 후보 아이템이 ~8개뿐이라 α와 무관하게 Recall≈1.0에 수렴
+
+→ 이 실험에서 baseline vs optimized Recall 비교는 의미 없음 (스키마 일관성을 위해 양쪽 모두 저장)  
 → **실질 분석 포인트: 메서드 간 비교** (cosine vs euclidean vs pcc 등)
 
 ---
